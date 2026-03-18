@@ -1,0 +1,1114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<title>HFS — New Contact</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+:root {
+  --navy: #1B3A5C;
+  --navy-dark: #122843;
+  --gold: #C8A951;
+  --gold-light: #F5EDD6;
+  --bg: #F2F2F7;
+  --white: #FFFFFF;
+  --text: #000000;
+  --text-mid: #3C3C43;
+  --text-light: #8E8E93;
+  --border: #C6C6C8;
+  --green: #34C759;
+  --green-dark: #1A7A52;
+  --green-light: #E8F5EE;
+  --red: #FF3B30;
+  --red-light: #FFF2F1;
+  --blue: #007AFF;
+}
+
+html, body {
+  height: 100%;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  font-size: 17px;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── BLUE HEADER (like Modento) ── */
+.top-bar {
+  background: var(--navy);
+  padding: env(safe-area-inset-top, 14px) 0 0;
+  position: sticky;
+  top: 0;
+  z-index: 200;
+}
+
+.top-bar-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px 12px;
+}
+
+.top-bar-logo {
+  display: flex; align-items: center; gap: 9px;
+}
+
+.logo-mark {
+  width: 32px; height: 32px;
+  background: var(--gold);
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 800; color: var(--navy-dark);
+  flex-shrink: 0;
+}
+
+.top-bar-name {
+  font-size: 15px; font-weight: 700; color: white; line-height: 1.2;
+}
+.top-bar-sub {
+  font-size: 11px; color: rgba(255,255,255,0.55);
+}
+
+.top-bar-cancel {
+  font-size: 15px; font-weight: 500;
+  color: rgba(255,255,255,0.7);
+  padding: 6px 0 6px 14px;
+  cursor: pointer;
+}
+
+/* ── STEP TITLE BAR (like "Contact Details" in Modento) ── */
+.step-title-bar {
+  background: var(--navy-dark);
+  padding: 10px 16px;
+  text-align: center;
+  font-size: 15px;
+  font-weight: 600;
+  color: rgba(255,255,255,0.85);
+  letter-spacing: 0.1px;
+}
+
+/* ── PAGE BODY ── */
+.page-body {
+  padding: 20px 16px 140px;
+}
+
+/* ── STEP HEADER (like "Basic Information  Step 1/5") ── */
+.step-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.step-heading {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.step-counter {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-mid);
+}
+
+/* ── CARD ── */
+.card {
+  background: var(--white);
+  border-radius: 12px;
+  padding: 0 16px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  margin-bottom: 12px;
+  overflow: hidden;
+}
+
+/* ── FIELD (like Modento underline style) ── */
+.field {
+  padding: 14px 0 4px;
+  border-bottom: 1px solid var(--border);
+  position: relative;
+}
+.field:last-child { border-bottom: none; }
+
+.field-label {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-light);
+  margin-bottom: 4px;
+  display: block;
+}
+
+.field-label .req {
+  color: var(--red);
+  margin-left: 2px;
+}
+
+.field-input {
+  width: 100%;
+  border: none;
+  outline: none;
+  font-size: 17px;
+  font-family: 'Inter', -apple-system, sans-serif;
+  font-weight: 400;
+  color: var(--text);
+  background: transparent;
+  padding: 2px 0 10px;
+  -webkit-appearance: none;
+}
+.field-input::placeholder { color: var(--text-light); font-weight: 400; }
+.field-input.error-field { color: var(--red); }
+
+.field-select {
+  width: 100%;
+  border: none;
+  outline: none;
+  font-size: 17px;
+  font-family: 'Inter', -apple-system, sans-serif;
+  color: var(--text);
+  background: transparent;
+  padding: 2px 24px 10px 0;
+  -webkit-appearance: none;
+  appearance: none;
+  cursor: pointer;
+}
+
+.field-select-wrap { position: relative; }
+.field-select-wrap::after {
+  content: "⌄";
+  position: absolute; right: 4px; bottom: 12px;
+  font-size: 16px; color: var(--text-light);
+  pointer-events: none;
+}
+
+.field-textarea {
+  width: 100%;
+  border: none; outline: none;
+  font-size: 17px;
+  font-family: 'Inter', -apple-system, sans-serif;
+  color: var(--text);
+  background: transparent;
+  padding: 2px 0 10px;
+  resize: none;
+  min-height: 80px;
+  line-height: 1.45;
+  -webkit-appearance: none;
+}
+.field-textarea::placeholder { color: var(--text-light); }
+
+.field-row-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+}
+.field-row-2 .field:first-child {
+  padding-right: 12px;
+  border-right: 1px solid var(--border);
+  margin-right: 12px;
+}
+
+/* ── TITLE CHIPS ── */
+.chips-wrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 4px 0 10px;
+}
+
+.chip { position: relative; }
+.chip input { position: absolute; opacity: 0; width: 0; height: 0; }
+.chip-label {
+  display: block;
+  padding: 8px 16px;
+  background: var(--bg);
+  border: 1.5px solid var(--border);
+  border-radius: 20px;
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--text-mid);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.chip input:checked + .chip-label {
+  background: var(--navy);
+  border-color: var(--navy);
+  color: white;
+}
+
+/* ── CONTACT TYPE GRID (multi-select checkboxes) ── */
+.type-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  padding: 12px 0 4px;
+}
+
+.type-opt { position: relative; }
+.type-opt input { position: absolute; opacity: 0; width: 0; height: 0; }
+
+.type-lbl {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 13px 14px;
+  background: var(--bg);
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.15s;
+  position: relative;
+}
+
+.type-opt input:checked + .type-lbl {
+  background: #EBF2FA;
+  border-color: var(--navy);
+}
+
+.type-check-box {
+  width: 22px; height: 22px;
+  border-radius: 6px;
+  border: 2px solid var(--border);
+  background: white;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  transition: all 0.15s;
+  font-size: 13px;
+  color: transparent;
+}
+
+.type-opt input:checked + .type-lbl .type-check-box {
+  background: var(--navy);
+  border-color: var(--navy);
+  color: white;
+}
+
+.type-text {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-mid);
+  line-height: 1.3;
+}
+.type-opt input:checked + .type-lbl .type-text { color: var(--navy); }
+
+/* ── PHOTO BUTTON ── */
+.photo-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 0 14px;
+  border-bottom: 1px solid var(--border);
+}
+
+.photo-thumb {
+  width: 52px; height: 52px;
+  border-radius: 50%;
+  background: var(--bg);
+  border: 1.5px dashed var(--border);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px;
+  overflow: hidden;
+  flex-shrink: 0;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.photo-thumb img {
+  width: 100%; height: 100%;
+  object-fit: cover; display: none;
+}
+.photo-thumb:active { background: var(--gold-light); }
+
+.photo-actions { flex: 1; }
+.photo-label { font-size: 13px; color: var(--text-light); margin-bottom: 6px; }
+.photo-btns { display: flex; gap: 8px; }
+.photo-btn {
+  padding: 7px 14px;
+  background: var(--bg);
+  border: 1.5px solid var(--border);
+  border-radius: 16px;
+  font-size: 13px; font-weight: 600;
+  color: var(--navy);
+  cursor: pointer;
+  font-family: 'Inter', sans-serif;
+  transition: all 0.15s;
+}
+.photo-btn:active { background: var(--gold-light); border-color: var(--gold); }
+input[type="file"] { display: none; }
+
+/* ── ADD SECOND PERSON ── */
+.add-person-btn {
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  width: 100%;
+  padding: 14px;
+  background: var(--white);
+  border: 1.5px dashed rgba(27,58,92,0.3);
+  border-radius: 12px;
+  font-size: 15px; font-weight: 600; color: var(--navy);
+  cursor: pointer; font-family: 'Inter', sans-serif;
+  transition: all 0.15s;
+  margin-top: 4px;
+}
+.add-person-btn:active { background: var(--gold-light); }
+
+.person2-section { display: none; }
+.person2-section.show { display: block; }
+
+.person2-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin: 16px 0 8px;
+}
+.person2-title {
+  font-size: 13px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.5px;
+  color: var(--navy);
+}
+.remove-p2 {
+  font-size: 13px; color: var(--red); font-weight: 600; cursor: pointer;
+}
+
+/* ── MANDATORY NOTE ── */
+.mandatory-note {
+  font-size: 13px;
+  color: var(--text-light);
+  margin-top: 10px;
+}
+
+/* ── BOTTOM NAV (exactly like Modento) ── */
+.bottom-nav {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  background: var(--white);
+  border-top: 1px solid var(--border);
+  padding: 12px 16px calc(12px + env(safe-area-inset-bottom, 0));
+  display: flex;
+  gap: 12px;
+  z-index: 200;
+}
+
+.btn-back {
+  display: flex; align-items: center; gap: 6px;
+  padding: 14px 20px;
+  background: transparent;
+  border: none;
+  font-size: 16px; font-weight: 600; color: var(--blue);
+  font-family: 'Inter', sans-serif;
+  cursor: pointer;
+}
+
+.btn-next {
+  flex: 1;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  padding: 15px;
+  background: var(--navy);
+  border: none;
+  border-radius: 12px;
+  font-size: 17px; font-weight: 700; color: white;
+  font-family: 'Inter', sans-serif;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.btn-next:active { background: var(--navy-dark); transform: scale(0.98); }
+.btn-next.green { background: var(--green-dark); }
+
+/* ── STEPS ── */
+.step { display: none; animation: slideIn 0.22s ease; }
+.step.active { display: block; }
+.step.back-anim { animation: slideBack 0.22s ease; }
+
+@keyframes slideIn   { from { opacity:0; transform:translateX(20px); } to { opacity:1; transform:translateX(0); } }
+@keyframes slideBack { from { opacity:0; transform:translateX(-20px); } to { opacity:1; transform:translateX(0); } }
+
+/* ── SUCCESS ── */
+.success-wrap {
+  display: none; flex-direction: column; align-items: center;
+  justify-content: center; min-height: 80vh;
+  padding: 40px 20px; text-align: center;
+}
+.success-wrap.show { display: flex; }
+
+.success-circle {
+  width: 80px; height: 80px;
+  background: var(--green-light);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 36px; margin-bottom: 22px;
+  animation: popIn 0.4s cubic-bezier(0.175,0.885,0.32,1.275);
+}
+@keyframes popIn { from { transform:scale(0); opacity:0; } to { transform:scale(1); opacity:1; } }
+
+.success-name { font-size: 24px; font-weight: 700; margin-bottom: 6px; }
+.success-sub { font-size: 15px; color: var(--text-light); margin-bottom: 28px; line-height: 1.5; max-width: 280px; }
+
+.confirm-card {
+  background: var(--white);
+  border-radius: 14px;
+  width: 100%; max-width: 340px;
+  margin-bottom: 24px;
+  overflow: hidden;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+}
+.confirm-row {
+  display: flex; justify-content: space-between; align-items: flex-start;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+  font-size: 14px;
+  gap: 12px;
+}
+.confirm-row:last-child { border-bottom: none; }
+.c-label { color: var(--text-light); flex-shrink: 0; }
+.c-value { font-weight: 600; color: var(--text); text-align: right; }
+.c-synced { color: var(--green-dark); font-weight: 600; }
+
+.btn-another {
+  width: 100%; max-width: 340px; padding: 15px;
+  background: var(--navy); color: white; border: none;
+  border-radius: 12px; font-size: 16px; font-weight: 700;
+  font-family: 'Inter', sans-serif; cursor: pointer; margin-bottom: 10px;
+}
+.btn-home {
+  width: 100%; max-width: 340px; padding: 15px;
+  background: var(--bg); color: var(--text-mid);
+  border: 1.5px solid var(--border); border-radius: 12px;
+  font-size: 16px; font-weight: 600;
+  font-family: 'Inter', sans-serif; cursor: pointer;
+}
+</style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="top-bar">
+  <div class="top-bar-inner">
+    <div class="top-bar-logo">
+      <div class="logo-mark">HFS</div>
+      <div>
+        <div class="top-bar-name">Humphrey Funeral Service</div>
+        <div class="top-bar-sub">New Contact Entry</div>
+      </div>
+    </div>
+    <div class="top-bar-cancel" onclick="confirmCancel()">Cancel</div>
+  </div>
+  <div class="step-title-bar" id="stepTitleBar">Contact Details</div>
+</div>
+
+<!-- FORM PAGES -->
+<div id="mainForm">
+  <div class="page-body">
+
+    <!-- ══ STEP 1: Name & Photo ══ -->
+    <div class="step active" id="step1">
+      <div class="step-header">
+        <div class="step-heading">Basic Information</div>
+        <div class="step-counter">Step 1/5</div>
+      </div>
+
+      <div class="card">
+        <!-- Photo -->
+        <div class="photo-row">
+          <div class="photo-thumb" id="photoThumb" onclick="document.getElementById('photoLib').click()">
+            <span id="photoEmoji">📷</span>
+            <img id="photoImg" alt="">
+          </div>
+          <div class="photo-actions">
+            <div class="photo-label">Photo or Document (optional)</div>
+            <div class="photo-btns">
+              <button class="photo-btn" onclick="document.getElementById('photoCam').click()">📸 Camera</button>
+              <button class="photo-btn" onclick="document.getElementById('photoLib').click()">🖼 Photo Library</button>
+              <button class="photo-btn" onclick="document.getElementById('pdfDoc').click()">📄 Document</button>
+            </div>
+          </div>
+        </div>
+        <input type="file" id="photoCam" accept="image/*" capture="environment" onchange="loadPhoto(this)">
+        <input type="file" id="photoLib" accept="image/*" onchange="loadPhoto(this)">
+        <input type="file" id="pdfDoc" accept=".pdf,application/pdf" onchange="loadDoc(this)">
+
+        <!-- Document attached indicator (hidden until PDF selected) -->
+        <div id="docAttached" style="display:none;padding:10px 0 4px;">
+          <div style="display:flex;align-items:center;gap:8px;padding:10px 12px;background:#EBF2FA;border-radius:8px;border:1px solid rgba(27,58,92,0.2);">
+            <span style="font-size:18px">📄</span>
+            <div style="flex:1">
+              <div style="font-size:13px;font-weight:600;color:var(--navy)" id="docName">document.pdf</div>
+              <div style="font-size:11px;color:var(--text-light)">PDF attached</div>
+            </div>
+            <span style="font-size:13px;color:var(--red);cursor:pointer;padding:4px" onclick="removeDoc()">✕</span>
+          </div>
+        </div>
+
+        <!-- Honorific -->
+        <div class="field">
+          <label class="field-label">Honorific / Title</label>
+          <div class="chips-wrap">
+            <label class="chip"><input type="radio" name="hon1" value="Mr."><span class="chip-label">Mr.</span></label>
+            <label class="chip"><input type="radio" name="hon1" value="Mrs."><span class="chip-label">Mrs.</span></label>
+            <label class="chip"><input type="radio" name="hon1" value="Ms."><span class="chip-label">Ms.</span></label>
+            <label class="chip"><input type="radio" name="hon1" value="Dr."><span class="chip-label">Dr.</span></label>
+            <label class="chip"><input type="radio" name="hon1" value="Rev."><span class="chip-label">Rev.</span></label>
+            <label class="chip"><input type="radio" name="hon1" value="—"><span class="chip-label">None</span></label>
+          </div>
+        </div>
+
+        <!-- Name -->
+        <div class="field" id="f-first">
+          <label class="field-label">First Name <span class="req">*</span></label>
+          <input class="field-input" id="firstName" type="text" placeholder="First name" autocomplete="given-name">
+        </div>
+        <div class="field">
+          <label class="field-label">Last Name <span class="req">*</span></label>
+          <input class="field-input" id="lastName" type="text" placeholder="Last name" autocomplete="family-name">
+        </div>
+
+        <!-- Company / Organization -->
+        <div class="field">
+          <label class="field-label">Company / Organization</label>
+          <input class="field-input" id="company" type="text" placeholder="e.g. Arkansas Nuclear One, ARVHS">
+        </div>
+        <!-- Job Title / Position -->
+        <div class="field">
+          <label class="field-label">Title / Position</label>
+          <input class="field-input" id="jobTitle" type="text" placeholder="e.g. Retired, Business Owner, Director">
+        </div>
+      </div>
+      <div class="mandatory-note">* Mandatory fields</div>
+    </div>
+
+    <!-- ══ STEP 2: Contact Info ══ -->
+    <div class="step" id="step2">
+      <div class="step-header">
+        <div class="step-heading">Contact Information</div>
+        <div class="step-counter">Step 2/5</div>
+      </div>
+
+      <div class="card">
+        <div class="field" id="f-phone">
+          <label class="field-label">Mobile Phone Number <span class="req">*</span></label>
+          <input class="field-input" id="phone" type="tel" placeholder="(479) ___-____" autocomplete="tel" inputmode="tel">
+        </div>
+        <div class="field">
+          <label class="field-label">Home Phone Number</label>
+          <input class="field-input" id="homePhone" type="tel" placeholder="(479) ___-____" inputmode="tel">
+        </div>
+        <div class="field">
+          <label class="field-label">Email Address</label>
+          <input class="field-input" id="email" type="email" placeholder="email@example.com" autocomplete="email" inputmode="email">
+        </div>
+        <div class="field">
+          <label class="field-label">Preferred Contact Method</label>
+          <div class="field-select-wrap">
+            <select class="field-select" id="contactMethod">
+              <option value="">Select…</option>
+              <option>Cell Phone</option>
+              <option>Home Phone</option>
+              <option>Email</option>
+              <option>Text Message</option>
+              <option>Mail</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="mandatory-note">* Mandatory fields</div>
+    </div>
+
+    <!-- ══ STEP 3: Address ══ -->
+    <div class="step" id="step3">
+      <div class="step-header">
+        <div class="step-heading">Address</div>
+        <div class="step-counter">Step 3/5</div>
+      </div>
+
+      <div class="card">
+        <div class="field">
+          <label class="field-label">Street Address</label>
+          <input class="field-input" id="address" type="text" placeholder="123 Main Street" autocomplete="street-address">
+        </div>
+        <div class="field">
+          <label class="field-label">City <span class="req">*</span></label>
+          <input class="field-input" id="city" type="text" placeholder="Russellville" autocomplete="address-level2">
+        </div>
+        <div class="field">
+          <label class="field-label">State <span class="req">*</span></label>
+          <input class="field-input" id="state" type="text" placeholder="Arkansas" value="Arkansas" autocomplete="address-level1">
+        </div>
+        <div class="field">
+          <label class="field-label">ZIP Code</label>
+          <input class="field-input" id="zip" type="text" placeholder="72801" maxlength="10" inputmode="numeric">
+        </div>
+      </div>
+
+      <!-- Second Person -->
+      <button class="add-person-btn" id="addP2Btn" onclick="showP2()">
+        👫 Add Spouse / Second Person
+      </button>
+
+      <div class="person2-section" id="p2section">
+        <div class="person2-header">
+          <span class="person2-title">Spouse / Second Person</span>
+          <span class="remove-p2" onclick="hideP2()">✕ Remove</span>
+        </div>
+        <div class="card">
+          <div class="field">
+            <label class="field-label">Honorific / Title</label>
+            <div class="chips-wrap">
+              <label class="chip"><input type="radio" name="hon2" value="Mr."><span class="chip-label">Mr.</span></label>
+              <label class="chip"><input type="radio" name="hon2" value="Mrs."><span class="chip-label">Mrs.</span></label>
+              <label class="chip"><input type="radio" name="hon2" value="Ms."><span class="chip-label">Ms.</span></label>
+              <label class="chip"><input type="radio" name="hon2" value="Dr."><span class="chip-label">Dr.</span></label>
+              <label class="chip"><input type="radio" name="hon2" value="Rev."><span class="chip-label">Rev.</span></label>
+            </div>
+          </div>
+          <div class="field">
+            <label class="field-label">First Name</label>
+            <input class="field-input" id="firstName2" type="text" placeholder="First name">
+          </div>
+          <div class="field">
+            <label class="field-label">Last Name (if different)</label>
+            <input class="field-input" id="lastName2" type="text" placeholder="Last name">
+          </div>
+          <div class="field">
+            <label class="field-label">Mobile Phone</label>
+            <input class="field-input" id="phone2" type="tel" placeholder="(479) ___-____" inputmode="tel">
+          </div>
+          <div class="field">
+            <label class="field-label">Email Address</label>
+            <input class="field-input" id="email2" type="email" placeholder="email@example.com" inputmode="email">
+          </div>
+          <div class="field">
+            <label class="field-label">Company / Organization</label>
+            <input class="field-input" id="company2" type="text" placeholder="e.g. Company name">
+          </div>
+          <div class="field">
+            <label class="field-label">Title / Position</label>
+            <input class="field-input" id="jobTitle2" type="text" placeholder="e.g. Retired, Nurse">
+          </div>
+        </div>
+      </div>
+
+      <div class="mandatory-note" style="margin-top:12px">* Mandatory fields</div>
+    </div>
+
+    <!-- ══ STEP 4: Contact Type (multi-select) ══ -->
+    <div class="step" id="step4">
+      <div class="step-header">
+        <div class="step-heading">Contact Type</div>
+        <div class="step-counter">Step 4/5</div>
+      </div>
+
+      <div class="card" style="padding:12px 16px 16px">
+        <div style="font-size:13px;color:var(--text-light);margin-bottom:4px">Select all that apply</div>
+        <div class="type-grid">
+
+          <label class="type-opt">
+            <input type="checkbox" name="ctype" value="Pre-Need Traditional">
+            <div class="type-lbl">
+              <span class="type-check-box">✓</span>
+              <span class="type-text">Pre-Need Traditional</span>
+            </div>
+          </label>
+
+          <label class="type-opt">
+            <input type="checkbox" name="ctype" value="Pre-Need Cremation">
+            <div class="type-lbl">
+              <span class="type-check-box">✓</span>
+              <span class="type-text">Pre-Need Cremation</span>
+            </div>
+          </label>
+
+          <label class="type-opt">
+            <input type="checkbox" name="ctype" value="Cemetery Plot">
+            <div class="type-lbl">
+              <span class="type-check-box">✓</span>
+              <span class="type-text">Cemetery Plot</span>
+            </div>
+          </label>
+
+          <label class="type-opt">
+            <input type="checkbox" name="ctype" value="Cremation Niche">
+            <div class="type-lbl">
+              <span class="type-check-box">✓</span>
+              <span class="type-text">Cremation Niche</span>
+            </div>
+          </label>
+
+          <label class="type-opt">
+            <input type="checkbox" name="ctype" value="Combination Package">
+            <div class="type-lbl">
+              <span class="type-check-box">✓</span>
+              <span class="type-text">Combination Package</span>
+            </div>
+          </label>
+
+          <label class="type-opt">
+            <input type="checkbox" name="ctype" value="Graveside Only">
+            <div class="type-lbl">
+              <span class="type-check-box">✓</span>
+              <span class="type-text">Graveside Only</span>
+            </div>
+          </label>
+
+          <label class="type-opt">
+            <input type="checkbox" name="ctype" value="Veteran / Field of Honor">
+            <div class="type-lbl">
+              <span class="type-check-box">✓</span>
+              <span class="type-text">Veteran / Field of Honor</span>
+            </div>
+          </label>
+
+          <label class="type-opt">
+            <input type="checkbox" name="ctype" value="Global Address List">
+            <div class="type-lbl">
+              <span class="type-check-box">✓</span>
+              <span class="type-text">Global Address List</span>
+            </div>
+          </label>
+
+          <label class="type-opt">
+            <input type="checkbox" name="ctype" value="Referral Source">
+            <div class="type-lbl">
+              <span class="type-check-box">✓</span>
+              <span class="type-text">Referral Source</span>
+            </div>
+          </label>
+
+          <label class="type-opt">
+            <input type="checkbox" name="ctype" value="Attorney Referral">
+            <div class="type-lbl">
+              <span class="type-check-box">✓</span>
+              <span class="type-text">Attorney Referral</span>
+            </div>
+          </label>
+
+          <label class="type-opt">
+            <input type="checkbox" name="ctype" value="Vendor / Supplier">
+            <div class="type-lbl">
+              <span class="type-check-box">✓</span>
+              <span class="type-text">Vendor / Supplier</span>
+            </div>
+          </label>
+
+          <label class="type-opt">
+            <input type="checkbox" name="ctype" value="Community Partner">
+            <div class="type-lbl">
+              <span class="type-check-box">✓</span>
+              <span class="type-text">Community Partner</span>
+            </div>
+          </label>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ STEP 5: Notes & Assignment ══ -->
+    <div class="step" id="step5">
+      <div class="step-header">
+        <div class="step-heading">Notes & Assignment</div>
+        <div class="step-counter">Step 5/5</div>
+      </div>
+
+      <div class="card">
+        <div class="field">
+          <label class="field-label">Initial Notes</label>
+          <textarea class="field-textarea" id="notes" placeholder="How did we meet this person? Veteran? Referred by someone? Specific interests or requests…"></textarea>
+        </div>
+        <div class="field">
+          <label class="field-label">Source</label>
+          <div class="field-select-wrap">
+            <select class="field-select" id="source">
+              <option value="">How did they find us?</option>
+              <option>Walk-in</option>
+              <option>Referral — Client</option>
+              <option>Referral — Charlie Case</option>
+              <option>Phone Inquiry</option>
+              <option>Prospect Letter</option>
+              <option>Community Event</option>
+              <option>VFW / American Legion</option>
+              <option>Website</option>
+              <option>Social Media</option>
+            </select>
+          </div>
+        </div>
+        <div class="field">
+          <label class="field-label">Assigned Staff Member</label>
+          <div class="field-select-wrap">
+            <select class="field-select" id="assignedStaff">
+              <option value="">Assign to…</option>
+              <option>Robert Heflin</option>
+              <option>Matthew Myers</option>
+              <option>James Humphrey</option>
+              <option>Jim Bob Humphrey</option>
+              <option>Brandy Humphrey</option>
+            </select>
+          </div>
+        </div>
+        <div class="field">
+          <label class="field-label">Priority</label>
+          <div class="field-select-wrap">
+            <select class="field-select" id="priority">
+              <option value="Normal">Normal</option>
+              <option value="High">High — Follow up immediately</option>
+              <option value="Low">Low — No rush</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="mandatory-note">Contact will sync to Microsoft 365 and CRM dashboard on save.</div>
+    </div>
+
+  </div><!-- end page-body -->
+</div><!-- end mainForm -->
+
+<!-- SUCCESS -->
+<div class="success-wrap" id="successWrap">
+  <div class="success-circle">✓</div>
+  <div class="success-name" id="successName">Contact Saved</div>
+  <div class="success-sub">Added to the CRM and synced to Microsoft 365.</div>
+  <div class="confirm-card">
+    <div class="confirm-row">
+      <span class="c-label">Name</span>
+      <span class="c-value" id="c-name">—</span>
+    </div>
+    <div class="confirm-row" id="c-spouse-row" style="display:none">
+      <span class="c-label">Spouse</span>
+      <span class="c-value" id="c-spouse">—</span>
+    </div>
+    <div class="confirm-row">
+      <span class="c-label">Phone</span>
+      <span class="c-value" id="c-phone">—</span>
+    </div>
+    <div class="confirm-row">
+      <span class="c-label">Type(s)</span>
+      <span class="c-value" id="c-type">—</span>
+    </div>
+    <div class="confirm-row">
+      <span class="c-label">Assigned</span>
+      <span class="c-value" id="c-staff">—</span>
+    </div>
+    <div class="confirm-row">
+      <span class="c-label">Follow-up task</span>
+      <span class="c-synced">Pushed to To Do ✓</span>
+    </div>
+    <div class="confirm-row">
+      <span class="c-label">Microsoft 365</span>
+      <span class="c-synced">Contact synced ✓</span>
+    </div>
+  </div>
+  <button class="btn-another" onclick="resetAll()">+ Add Another Contact</button>
+  <button class="btn-home" onclick="goHome()">Back to Dashboard</button>
+</div>
+
+<!-- BOTTOM NAV -->
+<div class="bottom-nav" id="bottomNav">
+  <button class="btn-back" id="backBtn" onclick="goBack()" style="visibility:hidden">← Back</button>
+  <button class="btn-next" id="nextBtn" onclick="goNext()">Next →</button>
+</div>
+
+<script>
+let cur = 1;
+const total = 5;
+
+const titles = [
+  "Contact Details",
+  "Contact Details",
+  "Contact Details",
+  "Contact Type",
+  "Notes & Assignment"
+];
+
+function refreshNav() {
+  document.getElementById('stepTitleBar').textContent = titles[cur - 1];
+  const back = document.getElementById('backBtn');
+  const next = document.getElementById('nextBtn');
+  back.style.visibility = cur > 1 ? 'visible' : 'hidden';
+  if (cur === total) {
+    next.textContent = 'Save Contact ✓';
+    next.classList.add('green');
+  } else {
+    next.innerHTML = 'Next &nbsp;→';
+    next.classList.remove('green');
+  }
+}
+
+function validate() {
+  if (cur === 1) {
+    const f = document.getElementById('firstName').value.trim();
+    const l = document.getElementById('lastName').value.trim();
+    if (!f || !l) {
+      if (!f) { document.getElementById('firstName').classList.add('error-field'); document.getElementById('firstName').placeholder = 'Required'; }
+      if (!l) { document.getElementById('lastName').classList.add('error-field'); document.getElementById('lastName').placeholder = 'Required'; }
+      return false;
+    }
+    document.getElementById('firstName').classList.remove('error-field');
+    document.getElementById('lastName').classList.remove('error-field');
+  }
+  if (cur === 2) {
+    const p = document.getElementById('phone').value.trim();
+    if (!p) {
+      document.getElementById('phone').classList.add('error-field');
+      document.getElementById('phone').placeholder = 'Required';
+      return false;
+    }
+    document.getElementById('phone').classList.remove('error-field');
+  }
+  return true;
+}
+
+function goNext() {
+  if (!validate()) { window.scrollTo({top:0,behavior:'smooth'}); return; }
+  if (cur === total) { submit(); return; }
+  document.getElementById('step' + cur).classList.remove('active');
+  cur++;
+  const el = document.getElementById('step' + cur);
+  el.classList.remove('back-anim');
+  void el.offsetWidth;
+  el.classList.add('active');
+  refreshNav();
+  window.scrollTo(0, 0);
+}
+
+function goBack() {
+  if (cur <= 1) return;
+  document.getElementById('step' + cur).classList.remove('active');
+  cur--;
+  const el = document.getElementById('step' + cur);
+  el.classList.add('back-anim');
+  el.classList.add('active');
+  refreshNav();
+  window.scrollTo(0, 0);
+}
+
+function submit() {
+  const hon1   = document.querySelector('input[name="hon1"]:checked')?.value || '';
+  const first  = document.getElementById('firstName').value.trim();
+  const last   = document.getElementById('lastName').value.trim();
+  const phone  = document.getElementById('phone').value.trim();
+  const staff  = document.getElementById('assignedStaff').value || 'Unassigned';
+  const types  = Array.from(document.querySelectorAll('input[name="ctype"]:checked')).map(c => c.value);
+  const name   = [hon1, first, last].filter(v => v && v !== '—').join(' ');
+
+  const f2 = document.getElementById('firstName2').value.trim();
+  const l2 = document.getElementById('lastName2').value.trim();
+  const h2 = document.querySelector('input[name="hon2"]:checked')?.value || '';
+  const hasSpouse = document.getElementById('p2section').classList.contains('show') && f2;
+
+  document.getElementById('successName').textContent = first + ' ' + last + ' — Saved ✓';
+  document.getElementById('c-name').textContent  = name;
+  document.getElementById('c-phone').textContent = phone;
+  document.getElementById('c-type').textContent  = types.length ? types.join(', ') : 'General Contact';
+  document.getElementById('c-staff').textContent = staff;
+
+  if (hasSpouse) {
+    const sp = [h2, f2, l2 || last].filter(v => v && v !== '—').join(' ');
+    document.getElementById('c-spouse').textContent = sp;
+    document.getElementById('c-spouse-row').style.display = 'flex';
+  } else {
+    document.getElementById('c-spouse-row').style.display = 'none';
+  }
+
+  document.getElementById('mainForm').style.display    = 'none';
+  document.getElementById('bottomNav').style.display   = 'none';
+  document.getElementById('successWrap').classList.add('show');
+  window.scrollTo(0, 0);
+}
+
+function resetAll() {
+  document.querySelectorAll('input[type="text"],input[type="tel"],input[type="email"]').forEach(el => {
+    el.value = el.id === 'state' ? 'Arkansas' : '';
+    el.classList.remove('error-field');
+  });
+  document.querySelectorAll('select').forEach(el => el.selectedIndex = 0);
+  document.querySelectorAll('textarea').forEach(el => el.value = '');
+  document.querySelectorAll('input[type="radio"],input[type="checkbox"]').forEach(r => r.checked = false);
+
+  const img = document.getElementById('photoImg');
+  img.src = ''; img.style.display = 'none';
+  document.getElementById('photoEmoji').style.display = '';
+  document.getElementById('photoThumb').style.border = '1.5px dashed var(--border)';
+
+  hideP2();
+  removeDoc();
+  cur = 1;
+  document.querySelectorAll('.step').forEach(s => s.classList.remove('active','back-anim'));
+  document.getElementById('step1').classList.add('active');
+  document.getElementById('mainForm').style.display   = '';
+  document.getElementById('bottomNav').style.display  = '';
+  document.getElementById('successWrap').classList.remove('show');
+  refreshNav();
+  window.scrollTo(0, 0);
+}
+
+function goHome() { window.location.href = 'HFS_PreNeed_CRM.html'; }
+
+function confirmCancel() {
+  const hasData = document.getElementById('firstName').value || document.getElementById('phone').value;
+  if (hasData) { if (confirm('Discard this contact?')) resetAll(); } else goHome();
+}
+
+function loadPhoto(input) {
+  if (!input.files || !input.files[0]) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    const img = document.getElementById('photoImg');
+    img.src = e.target.result;
+    img.style.display = 'block';
+    document.getElementById('photoEmoji').style.display = 'none';
+    document.getElementById('photoThumb').style.border = '2px solid var(--gold)';
+  };
+  reader.readAsDataURL(input.files[0]);
+}
+
+function loadDoc(input) {
+  if (!input.files || !input.files[0]) return;
+  const file = input.files[0];
+  document.getElementById('docName').textContent = file.name;
+  document.getElementById('docAttached').style.display = 'block';
+}
+
+function removeDoc() {
+  document.getElementById('pdfDoc').value = '';
+  document.getElementById('docAttached').style.display = 'none';
+  document.getElementById('docName').textContent = 'document.pdf';
+}
+
+function showP2() {
+  document.getElementById('p2section').classList.add('show');
+  document.getElementById('addP2Btn').style.display = 'none';
+  setTimeout(() => document.getElementById('p2section').scrollIntoView({behavior:'smooth',block:'start'}), 120);
+}
+
+function hideP2() {
+  document.getElementById('p2section').classList.remove('show');
+  document.getElementById('addP2Btn').style.display = 'flex';
+  ['firstName2','lastName2','phone2','email2','jobTitle2','company2'].forEach(id => document.getElementById(id).value = '');
+  document.querySelectorAll('input[name="hon2"]').forEach(r => r.checked = false);
+}
+
+// ── PHONE AUTO-FORMAT ──
+// Formats digits as (479) 264-1427 as user types
+function formatPhone(el) {
+  // Strip everything except digits
+  let digits = el.value.replace(/\D/g, '').slice(0, 10);
+  let formatted = '';
+  if (digits.length === 0) {
+    formatted = '';
+  } else if (digits.length <= 3) {
+    formatted = '(' + digits;
+  } else if (digits.length <= 6) {
+    formatted = '(' + digits.slice(0,3) + ') ' + digits.slice(3);
+  } else {
+    formatted = '(' + digits.slice(0,3) + ') ' + digits.slice(3,6) + '-' + digits.slice(6);
+  }
+  el.value = formatted;
+}
+
+// Wire up all phone inputs
+document.querySelectorAll('input[type="tel"]').forEach(el => {
+  el.addEventListener('input', () => formatPhone(el));
+  // Allow backspace to work naturally by re-running format on every input event
+});
+
+refreshNav();
+</script>
+</body>
+</html>
