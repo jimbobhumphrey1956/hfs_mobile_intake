@@ -1,0 +1,2367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HFS_CVMG_CRM</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Source+Sans+3:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy: #1B3A5C;
+  --navy-light: #234872;
+  --navy-dark: #122843;
+  --gold: #C8A951;
+  --gold-light: #F5EDD6;
+  --gold-mid: #E8D5A3;
+  --cream: #FAF7F2;
+  --white: #FFFFFF;
+  --text: #000000;
+  --text-mid: #000000;
+  --text-light: #000000;
+  --text-secondary: #333333;
+  --text-hint: #555555;
+  --border: #C8C2B8;
+  --red: #B02020;
+  --red-light: #FDECEA;
+  --green: #145A3A;
+  --green-light: #D6EFE2;
+  --amber: #8B5C00;
+  --amber-light: #FEF3D0;
+  --blue-light: #E4EEF8;
+  --shadow-sm: 0 1px 3px rgba(27,58,92,0.08);
+  --shadow: 0 4px 16px rgba(27,58,92,0.10);
+  --shadow-lg: 0 8px 32px rgba(27,58,92,0.14);
+  --radius: 8px;
+  --radius-lg: 12px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Source Sans 3', sans-serif;
+  background: var(--cream);
+  color: var(--text);
+  min-height: 100vh;
+  font-size: 16px;
+}
+
+.app { display: flex; min-height: 100vh; }
+
+/* ── SIDEBAR ── */
+.sidebar {
+  width: 230px;
+  background: var(--navy-dark);
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  top: 0; left: 0; bottom: 0;
+  z-index: 100;
+}
+
+.sidebar-logo {
+  padding: 20px 16px 16px;
+  border-bottom: 1px solid rgba(200,169,81,0.2);
+}
+
+.sidebar-logo .logo-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--gold);
+  line-height: 1.3;
+  letter-spacing: 0.3px;
+}
+
+.sidebar-logo .logo-sub {
+  font-size: 11px;
+  color: rgba(255,255,255,0.6);
+  margin-top: 3px;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+}
+
+.sidebar-user {
+  padding: 12px 16px;
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.user-avatar {
+  width: 30px; height: 30px;
+  border-radius: 50%;
+  background: var(--gold);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 700; color: var(--navy-dark);
+  flex-shrink: 0;
+}
+
+.user-name { font-size: 13px; color: #ffffff; font-weight: 500; }
+.user-role { font-size: 11px; color: rgba(255,255,255,0.65); }
+
+.sidebar-nav { flex: 1; padding: 8px 0; overflow-y: auto; }
+
+.nav-section-label {
+  font-size: 11px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.5);
+  padding: 12px 16px 4px;
+  font-weight: 600;
+}
+
+.nav-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 16px;
+  color: rgba(255,255,255,0.85);
+  cursor: pointer;
+  transition: all 0.15s;
+  font-size: 14px;
+  font-weight: 400;
+  border-left: 3px solid transparent;
+  user-select: none;
+}
+
+.nav-item:hover { background: rgba(255,255,255,0.08); color: #ffffff; }
+.nav-item.active { background: rgba(200,169,81,0.15); color: var(--gold); border-left-color: var(--gold); font-weight: 600; }
+
+.nav-icon { font-size: 16px; width: 20px; text-align: center; flex-shrink: 0; }
+
+.nav-badge {
+  margin-left: auto;
+  background: var(--red);
+  color: white;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 10px;
+  min-width: 20px;
+  text-align: center;
+}
+
+.nav-badge.amber { background: var(--amber); }
+
+.sidebar-footer {
+  padding: 12px 16px;
+  border-top: 1px solid rgba(255,255,255,0.07);
+}
+
+.signout-btn {
+  width: 100%;
+  padding: 9px;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.15);
+  color: rgba(255,255,255,0.75);
+  border-radius: var(--radius);
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.signout-btn:hover { background: rgba(255,255,255,0.14); color: #ffffff; }
+
+/* ── MAIN ── */
+.main {
+  margin-left: 230px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* ── TOPBAR ── */
+.topbar {
+  background: var(--white);
+  border-bottom: 1px solid var(--border);
+  padding: 0 24px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  box-shadow: var(--shadow-sm);
+}
+
+.topbar-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--navy);
+  flex: 1;
+}
+
+/* ── SEARCH ── */
+.search-wrap { position: relative; flex: 1; max-width: 500px; }
+
+.search-input {
+  width: 100%;
+  padding: 10px 16px 10px 40px;
+  border: 1.5px solid var(--border);
+  border-radius: 24px;
+  font-size: 15px;
+  font-family: 'Source Sans 3', sans-serif;
+  background: var(--cream);
+  color: var(--text);
+  outline: none;
+  transition: all 0.2s;
+}
+
+.search-input:focus { border-color: var(--navy); background: var(--white); }
+.search-input::placeholder { color: var(--text-hint); }
+
+.search-icon {
+  position: absolute;
+  left: 13px; top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-hint);
+  font-size: 15px;
+  pointer-events: none;
+}
+
+.quick-add-btn {
+  display: flex; align-items: center; gap: 6px;
+  padding: 10px 20px;
+  background: var(--navy);
+  color: #ffffff;
+  border: none;
+  border-radius: 24px;
+  font-size: 14px;
+  font-weight: 600;
+  font-family: 'Source Sans 3', sans-serif;
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+.quick-add-btn:hover { background: var(--navy-light); }
+
+/* ── PAGE ── */
+.page { padding: 24px; animation: fadeIn 0.2s ease; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+
+.section-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.section-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--navy);
+}
+
+.section-count { font-size: 14px; color: var(--text-secondary); margin-left: 6px; }
+
+/* ── STATS ── */
+.stats-row {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.stat-card {
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  padding: 16px;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.stat-card:hover { box-shadow: var(--shadow); transform: translateY(-1px); }
+.stat-card.active { border-color: var(--navy); }
+
+.stat-label { font-size: 12px; color: #000; text-transform: uppercase; letter-spacing: 0.6px; font-weight: 700; margin-bottom: 6px; }
+.stat-number { font-family: 'Playfair Display', serif; font-size: 30px; font-weight: 700; color: var(--navy); line-height: 1; }
+.stat-sub { font-size: 12px; color: var(--text-secondary); margin-top: 4px; }
+
+.stat-card.red .stat-number { color: var(--red); }
+.stat-card.amber .stat-number { color: var(--amber); }
+.stat-card.green .stat-number { color: var(--green); }
+
+/* ── LAYOUTS ── */
+.two-col { display: grid; grid-template-columns: 1fr 340px; gap: 20px; }
+.three-col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; }
+
+/* ── CARD ── */
+.card {
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+}
+
+.card-header {
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between;
+}
+
+.card-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--navy);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.card-action { font-size: 13px; color: var(--navy); cursor: pointer; font-weight: 600; }
+.card-action:hover { text-decoration: underline; }
+
+/* ── CLIENT TABLE ── */
+.client-table { width: 100%; border-collapse: collapse; }
+
+.client-table th {
+  padding: 11px 14px;
+  text-align: left;
+  font-size: 13px;
+  font-weight: 700;
+  color: #000000;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  background: var(--cream);
+  border-bottom: 2px solid var(--border);
+  white-space: nowrap;
+  user-select: none;
+}
+
+.sort-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 12px;
+  color: var(--navy);
+  padding: 0 0 0 4px;
+  font-weight: 700;
+  display: inline;
+}
+.sort-btn:hover { color: var(--gold); }
+.sort-btn.asc::after { content: ' ▲'; }
+.sort-btn.desc::after { content: ' ▼'; }
+.sort-btn:not(.asc):not(.desc)::after { content: ' ⇅'; color: var(--text-hint); }
+
+.client-table td {
+  padding: 13px 14px;
+  border-bottom: 1px solid var(--border);
+  vertical-align: middle;
+  font-size: 15px;
+  color: #000000;
+}
+
+.client-table tr:last-child td { border-bottom: none; }
+.client-table tbody tr { cursor: pointer; transition: background 0.1s; }
+.client-table tbody tr:hover { background: var(--blue-light); }
+
+.client-name { font-weight: 700; color: var(--navy); font-size: 15px; }
+.client-couple { font-size: 13px; color: var(--text-secondary); margin-top: 2px; }
+
+/* ── FILTER PANEL ── */
+.filter-panel {
+  background: var(--white);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 16px 20px;
+  margin-bottom: 16px;
+  display: none;
+}
+.filter-panel.open { display: block; }
+
+.filter-panel-inner {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 20px;
+}
+
+.filter-group-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--navy);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 10px;
+}
+
+.filter-check {
+  display: flex; align-items: center; gap: 8px;
+  margin-bottom: 7px;
+  cursor: pointer;
+  font-size: 14px;
+  color: #000;
+}
+.filter-check input { width: 16px; height: 16px; cursor: pointer; accent-color: var(--navy); }
+
+.filter-actions { margin-top: 14px; display: flex; gap: 8px; }
+
+/* ── STATUS BADGE ── */
+.badge {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.badge-prospect { background: #DDE3FF; color: #1A237E; }
+.badge-quote { background: var(--amber-light); color: var(--amber); }
+.badge-followup { background: #FFE8D0; color: #6B2800; }
+.badge-appointment { background: var(--blue-light); color: var(--navy); }
+.badge-signed { background: var(--green-light); color: var(--green); }
+.badge-overdue { background: var(--red-light); color: var(--red); }
+
+/* ── FOLLOW-UP ITEMS ── */
+.followup-item {
+  padding: 13px 18px;
+  border-bottom: 1px solid var(--border);
+  cursor: pointer;
+  transition: background 0.1s;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+.followup-item:last-child { border-bottom: none; }
+.followup-item:hover { background: var(--cream); }
+
+.followup-dot { width: 9px; height: 9px; border-radius: 50%; margin-top: 5px; flex-shrink: 0; }
+.dot-red { background: var(--red); }
+.dot-amber { background: var(--amber); }
+.dot-navy { background: var(--navy); }
+
+.followup-name { font-weight: 700; font-size: 15px; color: #000; }
+.followup-action { font-size: 13px; color: #222; margin-top: 2px; }
+.followup-date { font-size: 12px; margin-left: auto; padding-left: 8px; white-space: nowrap; flex-shrink: 0; font-weight: 700; }
+.date-overdue { color: var(--red); }
+.date-today { color: var(--amber); }
+.date-future { color: var(--text-secondary); }
+
+/* ── PIPELINE ── */
+.pipeline-row {
+  display: flex;
+  padding: 11px 18px;
+  align-items: center;
+  border-bottom: 1px solid var(--border);
+  gap: 10px;
+}
+.pipeline-row:last-child { border-bottom: none; }
+.pipeline-label { font-size: 14px; color: #000; flex: 1; font-weight: 500; }
+.pipeline-bar-wrap { width: 100px; height: 7px; background: var(--border); border-radius: 3px; overflow: hidden; }
+.pipeline-bar { height: 100%; border-radius: 3px; }
+.pipeline-count { font-size: 15px; font-weight: 700; color: var(--navy); min-width: 28px; text-align: right; }
+
+/* ── MODAL ── */
+.modal-overlay {
+  display: none;
+  position: fixed; inset: 0;
+  background: rgba(18,40,67,0.55);
+  z-index: 200;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(2px);
+}
+.modal-overlay.open { display: flex; }
+
+.modal {
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  width: 600px;
+  max-width: 95vw;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: var(--shadow-lg);
+  animation: modalIn 0.2s ease;
+}
+@keyframes modalIn { from { opacity:0; transform: scale(0.96) translateY(8px); } to { opacity:1; transform: scale(1) translateY(0); } }
+
+.modal-header {
+  padding: 20px 24px 16px;
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between;
+}
+
+.modal-title { font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 600; color: var(--navy); }
+
+.modal-close {
+  width: 30px; height: 30px;
+  border-radius: 50%;
+  border: none;
+  background: var(--cream);
+  color: #000;
+  font-size: 17px;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.15s;
+}
+.modal-close:hover { background: var(--border); }
+
+.modal-body { padding: 20px 24px; }
+.modal-footer {
+  padding: 14px 24px;
+  border-top: 1px solid var(--border);
+  display: flex; gap: 10px; justify-content: flex-end;
+}
+
+/* ── FORMS ── */
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px; }
+.form-row.single { grid-template-columns: 1fr; }
+.form-row.triple { grid-template-columns: 1fr 1fr 1fr; }
+.form-group { display: flex; flex-direction: column; gap: 5px; }
+
+.form-label {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--navy);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.form-input, .form-select, .form-textarea {
+  padding: 10px 13px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  font-size: 15px;
+  font-family: 'Source Sans 3', sans-serif;
+  color: #000;
+  background: var(--white);
+  outline: none;
+  transition: all 0.15s;
+}
+.form-input:focus, .form-select:focus, .form-textarea:focus { border-color: var(--navy); }
+.form-textarea { resize: vertical; min-height: 76px; }
+
+.form-divider {
+  display: flex; align-items: center; gap: 10px;
+  margin: 16px 0 14px;
+}
+.form-divider-line { flex: 1; height: 1px; background: var(--border); }
+.form-divider-label { font-size: 12px; font-weight: 700; color: #000; text-transform: uppercase; letter-spacing: 0.6px; }
+
+.form-section-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--navy);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 12px;
+  padding-bottom: 6px;
+  border-bottom: 2px solid var(--gold-light);
+}
+
+.couple-toggle {
+  display: flex; align-items: center; gap: 8px;
+  padding: 10px 14px;
+  background: var(--blue-light);
+  border: 1.5px solid rgba(27,58,92,0.15);
+  border-radius: var(--radius);
+  cursor: pointer;
+  margin-bottom: 16px;
+  transition: all 0.15s;
+}
+.couple-toggle:hover { background: var(--gold-light); border-color: var(--gold); }
+.couple-toggle input { accent-color: var(--navy); cursor: pointer; }
+.couple-toggle-label { font-size: 14px; color: var(--navy); font-weight: 600; cursor: pointer; }
+
+.spouse-section { display: none; }
+.spouse-section.show { display: block; }
+
+/* ── BUTTONS ── */
+.btn {
+  padding: 10px 22px;
+  border-radius: var(--radius);
+  font-size: 14px;
+  font-weight: 600;
+  font-family: 'Source Sans 3', sans-serif;
+  cursor: pointer;
+  transition: all 0.15s;
+  border: none;
+  display: inline-flex; align-items: center; gap: 6px;
+}
+
+.btn-primary { background: var(--navy); color: white; }
+.btn-primary:hover { background: var(--navy-light); }
+.btn-gold { background: var(--gold); color: var(--navy-dark); }
+.btn-gold:hover { background: #D4B35A; }
+.btn-ghost { background: transparent; color: #000; border: 1.5px solid var(--border); }
+.btn-ghost:hover { background: var(--cream); border-color: #999; }
+.btn-danger { background: var(--red-light); color: var(--red); border: 1.5px solid rgba(176,32,32,0.25); }
+.btn-danger:hover { background: #F8CECE; }
+.btn-sm { padding: 6px 14px; font-size: 13px; }
+
+/* ── CLIENT DETAIL ── */
+.detail-header {
+  background: var(--navy);
+  padding: 20px 24px;
+  color: white;
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+}
+.detail-name { font-family: 'Playfair Display', serif; font-size: 24px; font-weight: 700; margin-bottom: 4px; }
+.detail-meta { font-size: 13px; opacity: 0.85; display: flex; gap: 16px; margin-top: 6px; }
+.detail-meta span::before { content: "·"; margin-right: 6px; opacity: 0.6; }
+.detail-meta span:first-child::before { display: none; }
+
+.detail-tabs {
+  display: flex;
+  border-bottom: 1px solid var(--border);
+  background: var(--white);
+  padding: 0 18px;
+}
+
+.detail-tab {
+  padding: 13px 18px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #000;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+.detail-tab:hover { color: var(--navy); }
+.detail-tab.active { color: var(--navy); border-bottom-color: var(--gold); font-weight: 700; }
+
+.detail-body { padding: 20px 18px; }
+.info-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; }
+.info-item-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.6px; color: #000; margin-bottom: 3px; }
+.info-item-value { font-size: 15px; color: #000; font-weight: 500; }
+
+.activity-item { display: flex; gap: 12px; padding: 13px 0; border-bottom: 1px solid var(--border); }
+.activity-item:last-child { border-bottom: none; }
+.activity-icon { width: 32px; height: 32px; border-radius: 50%; background: var(--blue-light); display: flex; align-items: center; justify-content: center; font-size: 14px; flex-shrink: 0; }
+.activity-content { flex: 1; }
+.activity-title { font-size: 14px; font-weight: 700; color: #000; }
+.activity-note { font-size: 13px; color: #000; margin-top: 2px; }
+.activity-time { font-size: 12px; color: var(--text-secondary); margin-top: 3px; }
+
+/* ── SEARCH RESULTS ── */
+.search-results {
+  display: none;
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0; right: 0;
+  background: var(--white);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  z-index: 300;
+  overflow: hidden;
+}
+.search-results.show { display: block; }
+
+.search-result-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 11px 14px;
+  cursor: pointer;
+  transition: background 0.1s;
+}
+.search-result-item:hover { background: var(--blue-light); }
+.search-result-item + .search-result-item { border-top: 1px solid var(--border); }
+
+.result-initials {
+  width: 34px; height: 34px;
+  border-radius: 50%;
+  background: var(--navy);
+  color: white;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; font-weight: 700;
+  flex-shrink: 0;
+}
+
+.result-name { font-weight: 700; font-size: 14px; color: var(--navy); }
+.result-detail { font-size: 13px; color: #000; }
+
+/* ── QUOTES ── */
+.quote-line { display: flex; align-items: center; padding: 9px 0; border-bottom: 1px solid var(--border); gap: 8px; }
+.quote-line:last-child { border-bottom: none; }
+.quote-line-name { flex: 1; font-size: 14px; color: #000; }
+.quote-line-price { font-size: 14px; font-weight: 700; color: var(--navy); min-width: 85px; text-align: right; }
+.quote-total { display: flex; padding: 13px 0 4px; border-top: 2px solid var(--navy); margin-top: 6px; justify-content: space-between; align-items: center; }
+.quote-total-label { font-weight: 700; color: var(--navy); font-size: 15px; }
+.quote-total-amount { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 700; color: var(--navy); }
+
+/* ── TOAST ── */
+.toast {
+  position: fixed;
+  bottom: 24px; right: 24px;
+  background: var(--navy);
+  color: white;
+  padding: 13px 22px;
+  border-radius: var(--radius-lg);
+  font-size: 14px;
+  font-weight: 600;
+  box-shadow: var(--shadow-lg);
+  display: none;
+  align-items: center;
+  gap: 8px;
+  z-index: 999;
+  animation: toastIn 0.2s ease;
+}
+.toast.show { display: flex; }
+@keyframes toastIn { from { opacity:0; transform: translateY(8px); } to { opacity:1; transform: translateY(0); } }
+
+/* ── WORKFLOW STEPPER ── */
+.workflow-steps {
+  display: flex; gap: 0; margin-bottom: 20px;
+  background: var(--cream); border-radius: var(--radius-lg); padding: 3px; border: 1px solid var(--border);
+}
+.workflow-step {
+  flex: 1; padding: 9px 10px; text-align: center;
+  border-radius: calc(var(--radius-lg) - 3px);
+  font-size: 12px; font-weight: 700; color: var(--text-secondary);
+  text-transform: uppercase; letter-spacing: 0.4px; cursor: pointer; transition: all 0.2s;
+}
+.workflow-step.done { color: var(--green); }
+.workflow-step.active { background: var(--navy); color: white; box-shadow: var(--shadow-sm); }
+
+/* ── REFERRAL ── */
+.referral-row { display: flex; align-items: center; padding: 11px 18px; border-bottom: 1px solid var(--border); gap: 10px; }
+.referral-row:last-child { border-bottom: none; }
+.referral-rank { font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 700; color: var(--gold); min-width: 28px; }
+.referral-name { font-weight: 700; font-size: 15px; color: #000; flex: 1; }
+.referral-count { font-size: 15px; font-weight: 700; color: var(--navy); }
+.referral-sub { font-size: 12px; color: var(--text-secondary); }
+
+/* ── FILE UPLOAD ZONE ── */
+.upload-zone {
+  border: 2px dashed var(--border);
+  border-radius: var(--radius-lg);
+  padding: 28px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  background: var(--cream);
+}
+.upload-zone:hover, .upload-zone.dragover { border-color: var(--navy); background: var(--blue-light); }
+.upload-zone-icon { font-size: 32px; margin-bottom: 8px; }
+.upload-zone-title { font-size: 16px; font-weight: 700; color: var(--navy); margin-bottom: 4px; }
+.upload-zone-sub { font-size: 14px; color: var(--text-secondary); }
+
+.file-list { margin-top: 14px; display: flex; flex-direction: column; gap: 8px; }
+.file-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 14px;
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+.file-icon { font-size: 20px; }
+.file-name { flex: 1; font-size: 14px; font-weight: 600; color: #000; }
+.file-meta { font-size: 12px; color: var(--text-secondary); }
+.file-remove { background: none; border: none; cursor: pointer; font-size: 16px; color: var(--red); padding: 0 4px; }
+
+/* ── MAIL MERGE ── */
+.merge-step {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  margin-bottom: 14px;
+}
+.merge-step-header {
+  display: flex; align-items: center; gap: 12px; margin-bottom: 14px;
+}
+.merge-step-num {
+  width: 32px; height: 32px;
+  background: var(--navy);
+  color: white;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 15px; font-weight: 700; flex-shrink: 0;
+}
+.merge-step-title { font-size: 16px; font-weight: 700; color: var(--navy); }
+.merge-step-sub { font-size: 13px; color: var(--text-secondary); margin-top: 2px; }
+
+.source-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+.source-opt { position: relative; }
+.source-opt input { position: absolute; opacity: 0; }
+.source-lbl {
+  display: flex; flex-direction: column; align-items: center; gap: 6px;
+  padding: 14px 10px;
+  border: 2px solid var(--border);
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: all 0.15s;
+  text-align: center;
+}
+.source-opt input:checked + .source-lbl { border-color: var(--navy); background: var(--blue-light); }
+.source-lbl-icon { font-size: 24px; }
+.source-lbl-text { font-size: 13px; font-weight: 700; color: #000; }
+.source-lbl-sub { font-size: 11px; color: var(--text-secondary); }
+
+.filter-tag {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 5px 10px;
+  background: var(--blue-light);
+  border: 1px solid rgba(27,58,92,0.2);
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--navy);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.filter-tag.active { background: var(--navy); color: white; }
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #999; }
+</style>
+</head>
+<body>
+
+<div class="app">
+
+<!-- ── SIDEBAR ── -->
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-title">Humphrey Funeral Service<br>& Center Valley Gardens</div>
+    <div class="logo-sub">Pre-Need CRM</div>
+  </div>
+  <div class="sidebar-user">
+    <div class="user-avatar">RH</div>
+    <div>
+      <div class="user-name">Robert Heflin</div>
+      <div class="user-role">Pre-Need Counselor</div>
+    </div>
+  </div>
+  <nav class="sidebar-nav">
+    <div class="nav-section-label">Main</div>
+    <div class="nav-item active" onclick="showPage('home')"><span class="nav-icon">🔍</span> Search & Quick Add</div>
+    <div class="nav-item" onclick="showPage('dashboard')"><span class="nav-icon">📊</span> Follow-Up Dashboard<span class="nav-badge">3</span></div>
+    <div class="nav-item" onclick="showPage('clients')"><span class="nav-icon">👥</span> All Clients</div>
+    <div class="nav-item" onclick="showPage('quotes')"><span class="nav-icon">📄</span> Quotes<span class="nav-badge amber">5</span></div>
+    <div class="nav-section-label">Tools</div>
+    <div class="nav-item" onclick="showPage('prospects')"><span class="nav-icon">🎯</span> Prospecting</div>
+    <div class="nav-item" onclick="showPage('referrals')"><span class="nav-icon">🤝</span> Referrals</div>
+    <div class="nav-item" onclick="showPage('templates')"><span class="nav-icon">✉️</span> Letter Templates</div>
+    <div class="nav-section-label">Admin</div>
+    <div class="nav-item" onclick="showPage('pricing')"><span class="nav-icon">💲</span> Price Lists</div>
+    <div class="nav-item" onclick="showPage('settings')"><span class="nav-icon">⚙️</span> Settings</div>
+  </nav>
+  <div class="sidebar-footer">
+    <button class="signout-btn">Sign Out</button>
+  </div>
+</aside>
+
+<!-- ── MAIN ── -->
+<main class="main">
+
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <div style="position:relative;flex:1;max-width:520px;">
+      <span class="search-icon">🔍</span>
+      <input class="search-input" id="mainSearch" type="text" placeholder="Search clients by name, phone, or email…" oninput="handleSearch(this.value)" onfocus="handleSearch(this.value)" onblur="setTimeout(()=>closeSearch(),200)">
+      <div class="search-results" id="searchResults">
+        <div class="search-result-item" onclick="openClient('smith')">
+          <div class="result-initials">JS</div>
+          <div><div class="result-name">Smith, Jim & Mary</div><div class="result-detail">Combination Package · Follow-Up Due Mar 21</div></div>
+          <span class="badge badge-followup">Follow-Up</span>
+        </div>
+        <div class="search-result-item" onclick="openClient('johnson')">
+          <div class="result-initials">EJ</div>
+          <div><div class="result-name">Johnson, Earl</div><div class="result-detail">Burial Plot · Quote Sent Mar 14</div></div>
+          <span class="badge badge-quote">Active Quote</span>
+        </div>
+        <div class="search-result-item" onclick="openClient('henderson')">
+          <div class="result-initials">MH</div>
+          <div><div class="result-name">Henderson, Margaret & Bob</div><div class="result-detail">Combination Package · Appointment Mar 22</div></div>
+          <span class="badge badge-appointment">Appointment</span>
+        </div>
+      </div>
+    </div>
+    <button class="quick-add-btn" onclick="openModal('addClientModal')">+ New Client</button>
+  </div>
+
+  <!-- ══════════ PAGE: HOME ══════════ -->
+  <div class="page" id="page-home">
+    <div class="stats-row">
+      <div class="stat-card red" onclick="showPage('dashboard')">
+        <div class="stat-label">Overdue</div>
+        <div class="stat-number">3</div>
+        <div class="stat-sub">Need immediate follow-up</div>
+      </div>
+      <div class="stat-card amber" onclick="showPage('dashboard')">
+        <div class="stat-label">Due Today</div>
+        <div class="stat-number">5</div>
+        <div class="stat-sub">Follow-ups scheduled today</div>
+      </div>
+      <div class="stat-card" onclick="showPage('clients')">
+        <div class="stat-label">Active Clients</div>
+        <div class="stat-number">42</div>
+        <div class="stat-sub">In pipeline</div>
+      </div>
+      <div class="stat-card" onclick="showPage('quotes')">
+        <div class="stat-label">Open Quotes</div>
+        <div class="stat-number">11</div>
+        <div class="stat-sub">Awaiting response</div>
+      </div>
+      <div class="stat-card green">
+        <div class="stat-label">Signed MTD</div>
+        <div class="stat-number">4</div>
+        <div class="stat-sub">Contracts this month</div>
+      </div>
+    </div>
+    <div class="two-col">
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">Recent Clients</span>
+          <span class="card-action" onclick="showPage('clients')">View All →</span>
+        </div>
+        <table class="client-table">
+          <thead>
+            <tr>
+              <th>Name</th><th>Type</th><th>Status</th><th>Follow-Up</th><th>Staff</th><th>Quoted</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr onclick="openClient('smith')">
+              <td><div class="client-name">Smith, Jim & Mary</div><div class="client-couple">Couple · Referred by Charlie Case</div></td>
+              <td>Combination</td>
+              <td><span class="badge badge-followup">Follow-Up</span></td>
+              <td style="color:var(--red);font-weight:700">Mar 21 ⚠️</td>
+              <td>Heflin</td>
+              <td style="font-weight:700;color:var(--navy)">$11,015</td>
+            </tr>
+            <tr onclick="openClient('johnson')">
+              <td><div class="client-name">Johnson, Earl</div><div class="client-couple">Individual · Veteran</div></td>
+              <td>Burial Plot</td>
+              <td><span class="badge badge-quote">Active Quote</span></td>
+              <td style="color:var(--amber);font-weight:700">Today</td>
+              <td>Heflin</td>
+              <td style="font-weight:700;color:var(--navy)">$2,450</td>
+            </tr>
+            <tr onclick="openClient('henderson')">
+              <td><div class="client-name">Henderson, Margaret & Bob</div><div class="client-couple">Couple · Walk-in</div></td>
+              <td>Combination</td>
+              <td><span class="badge badge-appointment">Appointment</span></td>
+              <td>Mar 22</td>
+              <td>Myers</td>
+              <td style="font-weight:700;color:var(--navy)">—</td>
+            </tr>
+            <tr>
+              <td><div class="client-name">Williams, Dorothy</div><div class="client-couple">Individual · Retired Teacher</div></td>
+              <td>Cremation</td>
+              <td><span class="badge badge-prospect">Prospect</span></td>
+              <td>Mar 25</td>
+              <td>Heflin</td>
+              <td style="font-weight:700;color:var(--navy)">—</td>
+            </tr>
+            <tr>
+              <td><div class="client-name">Davis, Frank & Helen</div><div class="client-couple">Couple · Veteran</div></td>
+              <td>Traditional</td>
+              <td><span class="badge badge-signed">Signed ✓</span></td>
+              <td style="color:var(--green);font-weight:700">Complete</td>
+              <td>Heflin</td>
+              <td style="font-weight:700;color:var(--navy)">$9,340</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:16px;">
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title" style="color:var(--red)">⚠ Overdue Follow-Ups</span>
+            <span class="card-action" onclick="showPage('dashboard')">All →</span>
+          </div>
+          <div class="followup-item" onclick="openClient('smith')">
+            <div class="followup-dot dot-red"></div>
+            <div style="flex:1"><div class="followup-name">Smith, Jim & Mary</div><div class="followup-action">Follow-up call after quote</div></div>
+            <div class="followup-date date-overdue">2 days ago</div>
+          </div>
+          <div class="followup-item">
+            <div class="followup-dot dot-red"></div>
+            <div style="flex:1"><div class="followup-name">Turner, Patricia</div><div class="followup-action">Second follow-up — no response</div></div>
+            <div class="followup-date date-overdue">3 days ago</div>
+          </div>
+          <div class="followup-item">
+            <div class="followup-dot dot-red"></div>
+            <div style="flex:1"><div class="followup-name">Moore, Gerald</div><div class="followup-action">Appointment confirmation needed</div></div>
+            <div class="followup-date date-overdue">Yesterday</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header"><span class="card-title">Pipeline</span></div>
+          <div class="pipeline-row"><span class="pipeline-label">Prospect</span><div class="pipeline-bar-wrap"><div class="pipeline-bar" style="width:60%;background:#3A4DB5"></div></div><span class="pipeline-count">12</span></div>
+          <div class="pipeline-row"><span class="pipeline-label">Active Quote</span><div class="pipeline-bar-wrap"><div class="pipeline-bar" style="width:55%;background:var(--amber)"></div></div><span class="pipeline-count">11</span></div>
+          <div class="pipeline-row"><span class="pipeline-label">Follow-Up</span><div class="pipeline-bar-wrap"><div class="pipeline-bar" style="width:40%;background:#8B3000"></div></div><span class="pipeline-count">8</span></div>
+          <div class="pipeline-row"><span class="pipeline-label">Appointment</span><div class="pipeline-bar-wrap"><div class="pipeline-bar" style="width:25%;background:var(--navy)"></div></div><span class="pipeline-count">5</span></div>
+          <div class="pipeline-row"><span class="pipeline-label">Signed</span><div class="pipeline-bar-wrap"><div class="pipeline-bar" style="width:30%;background:var(--green)"></div></div><span class="pipeline-count">6</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════ PAGE: DASHBOARD ══════════ -->
+  <div class="page" id="page-dashboard" style="display:none">
+    <div class="section-header">
+      <div class="section-title">Follow-Up Dashboard <span class="section-count">— Saturday, March 22, 2026</span></div>
+      <button class="btn btn-primary btn-sm" onclick="showToast('Tasks synced to Microsoft To Do ✓')">⟳ Sync To Do</button>
+    </div>
+    <div class="three-col" style="margin-bottom:20px">
+      <div class="card" style="border-top:3px solid var(--red)">
+        <div class="card-header"><span class="card-title" style="color:var(--red)">Overdue · 3</span></div>
+        <div class="followup-item" onclick="openClient('smith')"><div class="followup-dot dot-red"></div><div style="flex:1"><div class="followup-name">Smith, Jim & Mary</div><div class="followup-action">Follow-up call after quote</div></div><div class="followup-date date-overdue">Mar 19</div></div>
+        <div class="followup-item"><div class="followup-dot dot-red"></div><div style="flex:1"><div class="followup-name">Turner, Patricia</div><div class="followup-action">Second follow-up — no response</div></div><div class="followup-date date-overdue">Mar 13</div></div>
+        <div class="followup-item"><div class="followup-dot dot-red"></div><div style="flex:1"><div class="followup-name">Moore, Gerald</div><div class="followup-action">Appointment confirmation</div></div><div class="followup-date date-overdue">Mar 15</div></div>
+      </div>
+      <div class="card" style="border-top:3px solid var(--amber)">
+        <div class="card-header"><span class="card-title" style="color:var(--amber)">Due Today · 5</span></div>
+        <div class="followup-item" onclick="openClient('johnson')"><div class="followup-dot dot-amber"></div><div style="flex:1"><div class="followup-name">Johnson, Earl</div><div class="followup-action">Follow-up call — quote sent</div></div><div class="followup-date date-today">Today</div></div>
+        <div class="followup-item"><div class="followup-dot dot-amber"></div><div style="flex:1"><div class="followup-name">Clark, Beverly</div><div class="followup-action">Send quote — cremation pkg</div></div><div class="followup-date date-today">Today</div></div>
+        <div class="followup-item"><div class="followup-dot dot-amber"></div><div style="flex:1"><div class="followup-name">Parks, Ronald</div><div class="followup-action">Appointment reminder call</div></div><div class="followup-date date-today">Today</div></div>
+        <div class="followup-item"><div class="followup-dot dot-amber"></div><div style="flex:1"><div class="followup-name">Wilson, Carl & Sue</div><div class="followup-action">Referral letter — Charlie Case</div></div><div class="followup-date date-today">Today</div></div>
+        <div class="followup-item"><div class="followup-dot dot-amber"></div><div style="flex:1"><div class="followup-name">Allen, Norma</div><div class="followup-action">Document request — DD-214</div></div><div class="followup-date date-today">Today</div></div>
+      </div>
+      <div class="card" style="border-top:3px solid var(--navy)">
+        <div class="card-header"><span class="card-title">This Week</span></div>
+        <div class="followup-item" onclick="openClient('henderson')"><div class="followup-dot dot-navy"></div><div style="flex:1"><div class="followup-name">Henderson, Margaret & Bob</div><div class="followup-action">Appointment — Mar 22 · 10:00am</div></div><div class="followup-date date-future">Mar 22</div></div>
+        <div class="followup-item"><div class="followup-dot dot-navy"></div><div style="flex:1"><div class="followup-name">Williams, Dorothy</div><div class="followup-action">Initial follow-up call</div></div><div class="followup-date date-future">Mar 25</div></div>
+        <div class="followup-item"><div class="followup-dot dot-navy"></div><div style="flex:1"><div class="followup-name">Young, Harold</div><div class="followup-action">Phone conference Q&A</div></div><div class="followup-date date-future">Mar 26</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════ PAGE: CLIENTS ══════════ -->
+  <div class="page" id="page-clients" style="display:none">
+    <div class="section-header">
+      <div class="section-title">All Clients <span class="section-count" id="clientCount">42 total</span></div>
+      <div style="display:flex;gap:8px;">
+        <button class="btn btn-ghost btn-sm" onclick="toggleFilter()" id="filterToggleBtn">🔽 Filter</button>
+        <button class="btn btn-primary btn-sm" onclick="openModal('addClientModal')">+ New Client</button>
+      </div>
+    </div>
+
+    <!-- FILTER PANEL -->
+    <div class="filter-panel" id="filterPanel">
+      <div class="filter-panel-inner">
+        <div>
+          <div class="filter-group-title">Type</div>
+          <label class="filter-check"><input type="checkbox" name="ftype" value="Traditional" onchange="applyFilters()"> Traditional Funeral</label>
+          <label class="filter-check"><input type="checkbox" name="ftype" value="Cremation" onchange="applyFilters()"> Cremation</label>
+          <label class="filter-check"><input type="checkbox" name="ftype" value="Burial Plot" onchange="applyFilters()"> Burial Plot</label>
+          <label class="filter-check"><input type="checkbox" name="ftype" value="Combination" onchange="applyFilters()"> Combination</label>
+          <label class="filter-check"><input type="checkbox" name="ftype" value="Graveside" onchange="applyFilters()"> Graveside Only</label>
+        </div>
+        <div>
+          <div class="filter-group-title">Status</div>
+          <label class="filter-check"><input type="checkbox" name="fstatus" value="Prospect" onchange="applyFilters()"> Prospect</label>
+          <label class="filter-check"><input type="checkbox" name="fstatus" value="Active Quote" onchange="applyFilters()"> Active Quote</label>
+          <label class="filter-check"><input type="checkbox" name="fstatus" value="Follow-Up" onchange="applyFilters()"> Follow-Up</label>
+          <label class="filter-check"><input type="checkbox" name="fstatus" value="Appointment" onchange="applyFilters()"> Appointment</label>
+          <label class="filter-check"><input type="checkbox" name="fstatus" value="Signed" onchange="applyFilters()"> Signed</label>
+        </div>
+        <div>
+          <div class="filter-group-title">Staff</div>
+          <label class="filter-check"><input type="checkbox" name="fstaff" value="Heflin" onchange="applyFilters()"> Heflin</label>
+          <label class="filter-check"><input type="checkbox" name="fstaff" value="Myers" onchange="applyFilters()"> Myers</label>
+          <label class="filter-check"><input type="checkbox" name="fstaff" value="James" onchange="applyFilters()"> James Humphrey</label>
+          <label class="filter-check"><input type="checkbox" name="fstaff" value="Jim Bob" onchange="applyFilters()"> Jim Bob Humphrey</label>
+        </div>
+      </div>
+      <div class="filter-actions">
+        <button class="btn btn-ghost btn-sm" onclick="clearFilters()">Clear All Filters</button>
+        <span id="filterStatus" style="font-size:13px;color:var(--text-secondary);align-self:center;margin-left:8px;"></span>
+      </div>
+    </div>
+
+    <div class="card">
+      <table class="client-table" id="clientTable">
+        <thead>
+          <tr>
+            <th>Name <button class="sort-btn" onclick="sortTable(0,this)"></button></th>
+            <th>Type <button class="sort-btn" onclick="sortTable(1,this)"></button></th>
+            <th>Source <button class="sort-btn" onclick="sortTable(2,this)"></button></th>
+            <th>Status <button class="sort-btn" onclick="sortTable(3,this)"></button></th>
+            <th>Follow-Up <button class="sort-btn" onclick="sortTable(4,this)"></button></th>
+            <th>Staff <button class="sort-btn" onclick="sortTable(5,this)"></button></th>
+            <th>Total Quoted <button class="sort-btn" onclick="sortTable(6,this)"></button></th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="clientTableBody">
+          <tr onclick="openClient('smith')" data-type="Combination" data-status="Follow-Up" data-staff="Heflin">
+            <td><div class="client-name">Smith, Jim & Mary</div><div class="client-couple">Couple · Referred by Charlie Case</div></td>
+            <td>Combination</td><td>Referral</td>
+            <td><span class="badge badge-followup">Follow-Up</span></td>
+            <td style="color:var(--red);font-weight:700">Mar 19 ⚠️</td>
+            <td>Heflin</td>
+            <td style="font-weight:700;color:var(--navy)">$11,015</td>
+            <td><span style="color:var(--navy);cursor:pointer;font-weight:600">Open →</span></td>
+          </tr>
+          <tr onclick="openClient('johnson')" data-type="Burial Plot" data-status="Active Quote" data-staff="Heflin">
+            <td><div class="client-name">Johnson, Earl</div><div class="client-couple">Individual · Veteran · Field of Honor</div></td>
+            <td>Burial Plot</td><td>Walk-in</td>
+            <td><span class="badge badge-quote">Active Quote</span></td>
+            <td style="color:var(--amber);font-weight:700">Today</td>
+            <td>Heflin</td>
+            <td style="font-weight:700;color:var(--navy)">$2,450</td>
+            <td><span style="color:var(--navy);cursor:pointer;font-weight:600">Open →</span></td>
+          </tr>
+          <tr onclick="openClient('henderson')" data-type="Combination" data-status="Appointment" data-staff="Myers">
+            <td><div class="client-name">Henderson, Margaret & Bob</div><div class="client-couple">Couple · Walk-in</div></td>
+            <td>Combination</td><td>Walk-in</td>
+            <td><span class="badge badge-appointment">Appointment</span></td>
+            <td>Mar 22</td>
+            <td>Myers</td>
+            <td style="font-weight:700;color:var(--navy)">—</td>
+            <td><span style="color:var(--navy);cursor:pointer;font-weight:600">Open →</span></td>
+          </tr>
+          <tr data-type="Cremation" data-status="Prospect" data-staff="Heflin">
+            <td><div class="client-name">Williams, Dorothy</div><div class="client-couple">Individual · Retired Teacher</div></td>
+            <td>Cremation</td><td>Prospect Letter</td>
+            <td><span class="badge badge-prospect">Prospect</span></td>
+            <td>Mar 25</td>
+            <td>Heflin</td>
+            <td style="font-weight:700;color:var(--navy)">—</td>
+            <td><span style="color:var(--navy);cursor:pointer;font-weight:600">Open →</span></td>
+          </tr>
+          <tr data-type="Traditional" data-status="Signed" data-staff="Heflin">
+            <td><div class="client-name">Davis, Frank & Helen</div><div class="client-couple">Couple · Veteran · Field of Honor</div></td>
+            <td>Traditional</td><td>Referral</td>
+            <td><span class="badge badge-signed">Signed ✓</span></td>
+            <td style="color:var(--green);font-weight:700">Complete</td>
+            <td>Heflin</td>
+            <td style="font-weight:700;color:var(--navy)">$9,340</td>
+            <td><span style="color:var(--navy);cursor:pointer;font-weight:600">Open →</span></td>
+          </tr>
+          <tr data-type="Combination" data-status="Follow-Up" data-staff="Myers">
+            <td><div class="client-name">Turner, Patricia</div><div class="client-couple">Individual · Senior</div></td>
+            <td>Combination</td><td>Phone Inquiry</td>
+            <td><span class="badge badge-followup">Follow-Up</span></td>
+            <td style="color:var(--red);font-weight:700">Mar 13 ⚠️</td>
+            <td>Myers</td>
+            <td style="font-weight:700;color:var(--navy)">$7,800</td>
+            <td><span style="color:var(--navy);cursor:pointer;font-weight:600">Open →</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ══════════ PAGE: REFERRALS ══════════ -->
+  <div class="page" id="page-referrals" style="display:none">
+    <div class="section-header">
+      <div class="section-title">Referral Management</div>
+      <button class="btn btn-gold btn-sm" onclick="showToast('Opening Charlie Case referral template…')">✉ Refer to Charlie Case</button>
+    </div>
+    <div class="two-col">
+      <div class="card">
+        <div class="card-header"><span class="card-title">Top Referral Sources — 2026</span></div>
+        <div class="referral-row"><span class="referral-rank">1</span><div style="flex:1"><div class="referral-name">Case, Charlie</div><div class="referral-sub">Winburn, Case, Shrader & Shram</div></div><div><div class="referral-count">8</div><div class="referral-sub">referrals</div></div></div>
+        <div class="referral-row"><span class="referral-rank">2</span><div style="flex:1"><div class="referral-name">Davis, Frank & Helen</div><div class="referral-sub">Client referral</div></div><div><div class="referral-count">3</div><div class="referral-sub">referrals</div></div></div>
+        <div class="referral-row"><span class="referral-rank">3</span><div style="flex:1"><div class="referral-name">VFW Post 1674</div><div class="referral-sub">Community partner</div></div><div><div class="referral-count">2</div><div class="referral-sub">referrals</div></div></div>
+        <div class="referral-row"><span class="referral-rank">4</span><div style="flex:1"><div class="referral-name">Arkansas Nuclear One (retirees)</div><div class="referral-sub">Community</div></div><div><div class="referral-count">2</div><div class="referral-sub">referrals</div></div></div>
+      </div>
+      <div class="card">
+        <div class="card-header"><span class="card-title">Attorney Referral — Charlie Case</span></div>
+        <div style="padding:16px 18px">
+          <div class="info-grid" style="grid-template-columns:1fr 1fr;margin-bottom:16px">
+            <div class="info-item"><div class="info-item-label">Attorney</div><div class="info-item-value">Charlie Case</div></div>
+            <div class="info-item"><div class="info-item-label">Firm</div><div class="info-item-value">Winburn, Case, Shrader & Shram</div></div>
+            <div class="info-item"><div class="info-item-label">Referred to Charlie</div><div class="info-item-value">12 clients</div></div>
+            <div class="info-item"><div class="info-item-label">Received from Charlie</div><div class="info-item-value">8 clients</div></div>
+          </div>
+          <button class="btn btn-primary" onclick="showToast('Charlie Case referral letter opened')">Generate Referral Letter</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════ PAGE: QUOTES ══════════ -->
+  <div class="page" id="page-quotes" style="display:none">
+    <div class="section-header"><div class="section-title">Price Quotes <span class="section-count">11 open</span></div><button class="btn btn-primary btn-sm" onclick="openModal('addClientModal')">+ New Quote</button></div>
+    <div class="card" style="padding:40px;text-align:center;">
+      <div style="font-size:32px;margin-bottom:8px">📄</div>
+      <div style="font-size:17px;font-weight:700;color:var(--navy);margin-bottom:6px">Quote Management</div>
+      <div style="font-size:15px;color:#000">Click any client to open their record and generate or view quotes. Full quote builder with pricing pulled from all four FTC price lists.</div>
+    </div>
+  </div>
+
+  <!-- ══════════ PAGE: PROSPECTING & MAIL MERGE ══════════ -->
+  <div class="page" id="page-prospects" style="display:none">
+    <div class="section-header">
+      <div class="section-title">Prospecting & Mail Merge</div>
+      <div style="display:flex;gap:8px;">
+        <button class="btn btn-ghost btn-sm" onclick="previewMerge()">👁 Preview</button>
+        <button class="btn btn-primary btn-sm" onclick="runMerge()">▶ Run Merge</button>
+      </div>
+    </div>
+
+    <!-- Step 1: Letter Template -->
+    <div class="merge-step">
+      <div class="merge-step-header">
+        <div class="merge-step-num">1</div>
+        <div><div class="merge-step-title">Letter Template</div><div class="merge-step-sub">Select a built-in template or paste your own. Use {{FieldName}} for merge fields.</div></div>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px">
+        <label style="cursor:pointer;padding:10px;border:1.5px solid var(--border);border-radius:var(--radius);transition:all 0.15s" id="tlbl-veteran" onclick="selectTemplate('veteran')">
+          <input type="radio" name="mergeTemplate" value="veteran" checked style="margin-right:6px">
+          <span style="font-size:14px;font-weight:700">🎖 Veterans Outreach</span>
+          <div style="font-size:12px;color:var(--text-secondary);margin-top:3px;margin-left:22px">Field of Honor introduction</div>
+        </label>
+        <label style="cursor:pointer;padding:10px;border:1.5px solid var(--border);border-radius:var(--radius);transition:all 0.15s" id="tlbl-teacher" onclick="selectTemplate('teacher')">
+          <input type="radio" name="mergeTemplate" value="teacher" style="margin-right:6px">
+          <span style="font-size:14px;font-weight:700">🍎 Retired Teachers</span>
+          <div style="font-size:12px;color:var(--text-secondary);margin-top:3px;margin-left:22px">Community appreciation</div>
+        </label>
+        <label style="cursor:pointer;padding:10px;border:1.5px solid var(--border);border-radius:var(--radius);transition:all 0.15s" id="tlbl-senior" onclick="selectTemplate('senior')">
+          <input type="radio" name="mergeTemplate" value="senior" style="margin-right:6px">
+          <span style="font-size:14px;font-weight:700">👴 General Senior</span>
+          <div style="font-size:12px;color:var(--text-secondary);margin-top:3px;margin-left:22px">Pre-need planning intro</div>
+        </label>
+        <label style="cursor:pointer;padding:10px;border:1.5px solid var(--border);border-radius:var(--radius);transition:all 0.15s" id="tlbl-followup" onclick="selectTemplate('followup')">
+          <input type="radio" name="mergeTemplate" value="followup" style="margin-right:6px">
+          <span style="font-size:14px;font-weight:700">📞 Follow-Up</span>
+          <div style="font-size:12px;color:var(--text-secondary);margin-top:3px;margin-left:22px">Post-contact follow-up</div>
+        </label>
+        <label style="cursor:pointer;padding:10px;border:1.5px solid var(--border);border-radius:var(--radius);transition:all 0.15s" id="tlbl-quote" onclick="selectTemplate('quote')">
+          <input type="radio" name="mergeTemplate" value="quote" style="margin-right:6px">
+          <span style="font-size:14px;font-weight:700">💲 Quote Cover</span>
+          <div style="font-size:12px;color:var(--text-secondary);margin-top:3px;margin-left:22px">Accompanies price quote</div>
+        </label>
+        <label style="cursor:pointer;padding:10px;border:1.5px solid var(--border);border-radius:var(--radius);transition:all 0.15s" id="tlbl-custom" onclick="selectTemplate('custom')">
+          <input type="radio" name="mergeTemplate" value="custom" style="margin-right:6px">
+          <span style="font-size:14px;font-weight:700">✏️ Custom / Edit</span>
+          <div style="font-size:12px;color:var(--text-secondary);margin-top:3px;margin-left:22px">Write or paste your own</div>
+        </label>
+      </div>
+
+      <!-- Template editor — always visible, pre-filled based on selection -->
+      <div style="margin-bottom:8px;display:flex;align-items:center;justify-content:space-between">
+        <div style="font-size:13px;font-weight:700;color:var(--navy);text-transform:uppercase;letter-spacing:0.5px">Template Body</div>
+        <div style="font-size:12px;color:var(--text-secondary)">Available fields: <code style="background:var(--blue-light);padding:2px 5px;border-radius:4px;font-size:12px">{{Date}} {{Title}} {{FirstName}} {{LastName}} {{FullName}} {{Address}} {{City}} {{State}} {{ZIP}} {{Phone}} {{Staff}}</code></div>
+      </div>
+      <textarea id="templateBody" class="form-textarea" style="min-height:220px;font-size:14px;font-family:Georgia,serif;line-height:1.7;"></textarea>
+    </div>
+
+    <!-- Step 2: Data Source -->
+    <div class="merge-step">
+      <div class="merge-step-header">
+        <div class="merge-step-num">2</div>
+        <div><div class="merge-step-title">Data Source</div><div class="merge-step-sub">Upload a CSV/Excel file, use CRM clients, or paste records manually</div></div>
+      </div>
+      <div class="source-grid" style="margin-bottom:14px">
+        <label class="source-opt" onclick="switchDataSource('csv')">
+          <input type="radio" name="datasource" value="csv" checked>
+          <div class="source-lbl">
+            <div class="source-lbl-icon">📊</div>
+            <div class="source-lbl-text">Upload CSV / Excel</div>
+            <div class="source-lbl-sub">Import prospect list file</div>
+          </div>
+        </label>
+        <label class="source-opt" onclick="switchDataSource('crm')">
+          <input type="radio" name="datasource" value="crm">
+          <div class="source-lbl">
+            <div class="source-lbl-icon">👥</div>
+            <div class="source-lbl-text">CRM Clients</div>
+            <div class="source-lbl-sub">Use filtered client list</div>
+          </div>
+        </label>
+        <label class="source-opt" onclick="switchDataSource('paste')">
+          <input type="radio" name="datasource" value="paste">
+          <div class="source-lbl">
+            <div class="source-lbl-icon">📋</div>
+            <div class="source-lbl-text">Paste Records</div>
+            <div class="source-lbl-sub">Paste CSV data directly</div>
+          </div>
+        </label>
+      </div>
+
+      <!-- CSV Upload Zone -->
+      <div id="ds-csv">
+        <div class="upload-zone" id="csvDropZone"
+          onclick="document.getElementById('csvFileInput').click()"
+          ondragover="event.preventDefault();this.classList.add('dragover')"
+          ondragleave="this.classList.remove('dragover')"
+          ondrop="handleCSVDrop(event)">
+          <div class="upload-zone-icon">📊</div>
+          <div class="upload-zone-title">Upload CSV or Excel Export</div>
+          <div class="upload-zone-sub">Required columns: <strong>LastName, FirstName</strong> · Optional: Title, Address, City, State, ZIP, Phone, Tag</div>
+          <div style="margin-top:8px;font-size:12px;color:var(--text-hint)">Drag & drop or click to browse · .csv or .xlsx exported as CSV</div>
+        </div>
+        <input type="file" id="csvFileInput" accept=".csv,.txt" style="display:none" onchange="handleCSVFile(this)">
+        <div id="csvStatus" style="display:none;margin-top:10px;padding:12px 16px;background:var(--green-light);border:1px solid rgba(20,90,58,0.2);border-radius:var(--radius)">
+          <span id="csvStatusText" style="font-size:14px;font-weight:700;color:var(--green)"></span>
+        </div>
+        <!-- Sample CSV download -->
+        <div style="margin-top:10px">
+          <button class="btn btn-ghost btn-sm" onclick="downloadSampleCSV()">⬇ Download Sample CSV Template</button>
+        </div>
+      </div>
+
+      <!-- CRM Source -->
+      <div id="ds-crm" style="display:none">
+        <div style="padding:14px 16px;background:var(--blue-light);border-radius:var(--radius);border:1px solid rgba(27,58,92,0.15)">
+          <div style="font-size:14px;font-weight:700;color:var(--navy);margin-bottom:8px">CRM Clients Selected for Merge</div>
+          <div id="crmRecordList" style="font-size:14px;color:#000"></div>
+          <div style="margin-top:8px;font-size:13px;color:var(--text-secondary)">Apply status/type filters on the All Clients page first, then return here to merge.</div>
+        </div>
+      </div>
+
+      <!-- Paste Source -->
+      <div id="ds-paste" style="display:none">
+        <div style="margin-bottom:8px;font-size:13px;color:#000">Paste CSV data below. First row must be headers: <code style="background:var(--blue-light);padding:2px 5px;border-radius:4px">LastName,FirstName,Title,Address,City,State,ZIP,Phone,Tag</code></div>
+        <textarea id="pasteData" class="form-textarea" style="min-height:140px;font-family:monospace;font-size:13px" placeholder="LastName,FirstName,Title,Address,City,State,ZIP,Phone,Tag&#10;Smith,Jim,Mr.,123 Oak St,Russellville,AR,72801,(479) 555-0100,Veteran&#10;Williams,Dorothy,Mrs.,456 Pine Ave,Atkins,AR,72823,(479) 555-0200,Retired Teacher" oninput="parsePasteData()"></textarea>
+        <div id="pasteStatus" style="margin-top:8px;font-size:13px;color:var(--navy);font-weight:600"></div>
+      </div>
+    </div>
+
+    <!-- Step 3: Filters -->
+    <div class="merge-step">
+      <div class="merge-step-header">
+        <div class="merge-step-num">3</div>
+        <div><div class="merge-step-title">Filter Records</div><div class="merge-step-sub">Narrow your list by tag, city, zip, or state</div></div>
+      </div>
+      <div style="margin-bottom:12px">
+        <div style="font-size:13px;font-weight:700;color:var(--navy);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px">Filter by Tag (from your data)</div>
+        <div style="display:flex;flex-wrap:wrap;gap:8px" id="tagFilterWrap">
+          <span class="filter-tag" id="ftag-Veteran" onclick="toggleTagFilter('Veteran',this)">Veteran</span>
+          <span class="filter-tag" id="ftag-RetiredTeacher" onclick="toggleTagFilter('Retired Teacher',this)">Retired Teacher</span>
+          <span class="filter-tag" id="ftag-Senior" onclick="toggleTagFilter('Senior',this)">Senior 65+</span>
+          <span class="filter-tag" id="ftag-FieldOfHonor" onclick="toggleTagFilter('Field of Honor',this)">Field of Honor</span>
+          <span class="filter-tag" id="ftag-General" onclick="toggleTagFilter('General',this)">General</span>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:12px;margin-top:12px">
+        <div class="form-group"><label class="form-label">City contains</label><input class="form-input" id="filterCity" type="text" placeholder="Russellville" oninput="updateMergeCount()"></div>
+        <div class="form-group"><label class="form-label">State</label><input class="form-input" id="filterState" type="text" placeholder="AR" value="AR" oninput="updateMergeCount()"></div>
+        <div class="form-group"><label class="form-label">ZIP Code</label><input class="form-input" id="filterZip" type="text" placeholder="72801" oninput="updateMergeCount()"></div>
+        <div class="form-group"><label class="form-label">Staff Signing</label>
+          <select class="form-select" id="mergeStaff">
+            <option value="Robert Heflin">Robert Heflin</option>
+            <option value="Matthew Myers">Matthew Myers</option>
+            <option value="Jim Bob Humphrey">Jim Bob Humphrey</option>
+            <option value="James Humphrey">James Humphrey</option>
+          </select>
+        </div>
+      </div>
+      <div style="margin-top:12px;padding:13px 16px;background:var(--blue-light);border-radius:var(--radius);border:1px solid rgba(27,58,92,0.15);display:flex;align-items:center;gap:16px">
+        <div><span style="font-size:14px;font-weight:700;color:var(--navy)">Records loaded: </span><span style="font-size:18px;font-weight:700;color:var(--navy)" id="totalLoaded">0</span></div>
+        <div><span style="font-size:14px;font-weight:700;color:var(--navy)">After filters: </span><span style="font-size:18px;font-weight:700;color:var(--navy)" id="mergeCount">0</span></div>
+        <div style="margin-left:auto"><span style="font-size:13px;color:var(--text-secondary)" id="filterSummary"></span></div>
+      </div>
+    </div>
+
+    <!-- Step 4: Preview & Output -->
+    <div class="merge-step">
+      <div class="merge-step-header">
+        <div class="merge-step-num">4</div>
+        <div><div class="merge-step-title">Preview & Output</div><div class="merge-step-sub">Preview merged letters, then print or download</div></div>
+      </div>
+
+      <!-- Preview panel -->
+      <div id="previewPanel" style="display:none;margin-bottom:16px">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+          <div style="font-size:14px;font-weight:700;color:var(--navy)">Preview — Record <span id="previewIdx">1</span> of <span id="previewTotal">0</span></div>
+          <div style="display:flex;gap:8px">
+            <button class="btn btn-ghost btn-sm" onclick="prevPreview()">◀ Prev</button>
+            <button class="btn btn-ghost btn-sm" onclick="nextPreview()">Next ▶</button>
+          </div>
+        </div>
+        <div id="letterPreview" style="background:var(--white);border:1px solid var(--border);border-radius:var(--radius-lg);padding:32px 40px;font-family:Georgia,serif;font-size:15px;line-height:1.8;max-width:680px;white-space:pre-wrap;color:#000;"></div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px">
+        <div style="padding:14px;border:1.5px solid var(--border);border-radius:var(--radius);cursor:pointer;transition:all 0.15s" id="out-print" onclick="selectOutput('print')" style="border-color:var(--navy);background:var(--blue-light)">
+          <div style="font-size:15px;font-weight:700;color:#000;margin-bottom:4px">🖨️ Print-Ready HTML</div>
+          <div style="font-size:13px;color:var(--text-secondary)">Opens print dialog — one letter per page, ready for your printer. Works with any printer including envelope printers.</div>
+        </div>
+        <div style="padding:14px;border:1.5px solid var(--border);border-radius:var(--radius);cursor:pointer;transition:all 0.15s" id="out-csv" onclick="selectOutput('csv')">
+          <div style="font-size:15px;font-weight:700;color:#000;margin-bottom:4px">📊 Export Mailing List (CSV)</div>
+          <div style="font-size:13px;color:var(--text-secondary)">Downloads a CSV of all filtered records — for mail house, label printing, or Excel import.</div>
+        </div>
+      </div>
+
+      <div style="padding:12px 16px;background:var(--amber-light);border:1px solid rgba(139,92,0,0.2);border-radius:var(--radius);font-size:13px;color:#000;margin-bottom:14px">
+        <strong>Word .docx merge</strong> (Microsoft 365 Mail Merge): requires Office Graph API — Phase 2, James. The print-ready HTML output below works now in any browser and prints identically to a Word merge.
+      </div>
+
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <button class="btn btn-ghost btn-sm" onclick="previewMerge()">👁 Preview First 3 Records</button>
+        <button class="btn btn-primary" onclick="runMerge()">▶ Run Merge & Output</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════ PAGE: LETTER TEMPLATES ══════════ -->
+  <div class="page" id="page-templates" style="display:none">
+    <div class="section-header">
+      <div class="section-title">Letter Templates</div>
+      <button class="btn btn-primary btn-sm" onclick="document.getElementById('newTemplateFile').click()">+ Upload Template</button>
+      <input type="file" id="newTemplateFile" accept=".docx,.doc" style="display:none" onchange="handleNewTemplate(this)">
+    </div>
+
+    <div id="templateFileList" style="margin-bottom:20px">
+      <div class="file-list">
+        <div class="file-item">
+          <div class="file-icon">📄</div>
+          <div class="file-name">Veterans_Outreach_Letter.docx</div>
+          <div class="file-meta">Field of Honor · Uploaded Mar 10</div>
+          <button class="btn btn-ghost btn-sm" onclick="showToast('Veterans letter opened in Word')">Open</button>
+          <button class="btn btn-ghost btn-sm" onclick="showToast('Running merge with this template…')">Merge</button>
+          <button class="file-remove" onclick="this.closest('.file-item').remove()">✕</button>
+        </div>
+        <div class="file-item">
+          <div class="file-icon">📄</div>
+          <div class="file-name">Quote_Cover_Letter.docx</div>
+          <div class="file-meta">Pre-need quote · Uploaded Mar 12</div>
+          <button class="btn btn-ghost btn-sm" onclick="showToast('Quote letter opened in Word')">Open</button>
+          <button class="btn btn-ghost btn-sm" onclick="showToast('Running merge with this template…')">Merge</button>
+          <button class="file-remove" onclick="this.closest('.file-item').remove()">✕</button>
+        </div>
+        <div class="file-item">
+          <div class="file-icon">📄</div>
+          <div class="file-name">Charlie_Case_Referral_Thank_You.docx</div>
+          <div class="file-meta">Attorney referral · Uploaded Mar 8</div>
+          <button class="btn btn-ghost btn-sm" onclick="showToast('Referral letter opened in Word')">Open</button>
+          <button class="btn btn-ghost btn-sm" onclick="showToast('Running merge…')">Merge</button>
+          <button class="file-remove" onclick="this.closest('.file-item').remove()">✕</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="upload-zone" id="templateDropZone"
+      onclick="document.getElementById('newTemplateFile2').click()"
+      ondragover="event.preventDefault();this.classList.add('dragover')"
+      ondragleave="this.classList.remove('dragover')"
+      ondrop="handleTemplateDrop(event)">
+      <div class="upload-zone-icon">📁</div>
+      <div class="upload-zone-title">Upload New Letter Template</div>
+      <div class="upload-zone-sub">Drag & drop or click to browse · Accepts .docx Word documents</div>
+      <div style="margin-top:8px;font-size:13px;color:#000">Merge fields: {{FirstName}} · {{LastName}} · {{Address}} · {{City}} · {{Phone}} · {{Date}} · {{Staff}}</div>
+    </div>
+    <input type="file" id="newTemplateFile2" accept=".docx,.doc" style="display:none" onchange="handleNewTemplate(this)">
+  </div>
+
+  <!-- ══════════ PAGE: PRICE LISTS ══════════ -->
+  <div class="page" id="page-pricing" style="display:none">
+    <div class="section-header">
+      <div class="section-title">Price Lists & Quote Forms</div>
+      <button class="btn btn-primary btn-sm" onclick="document.getElementById('priceListFile').click()">+ Upload Price List</button>
+      <input type="file" id="priceListFile" accept=".pdf,.xlsx,.docx" style="display:none" onchange="handlePriceUpload(this)">
+    </div>
+
+    <div id="priceFileList" style="margin-bottom:20px">
+      <div class="file-list">
+        <div class="file-item">
+          <div class="file-icon">📋</div>
+          <div class="file-name">HFS_General_Price_List_2026.pdf</div>
+          <div class="file-meta">FTC General Price List · Updated Jan 2026</div>
+          <button class="btn btn-ghost btn-sm" onclick="showToast('General Price List opened')">View</button>
+          <button class="btn btn-ghost btn-sm" onclick="showToast('Price list sent to client ✓')">Send to Client</button>
+          <button class="file-remove" onclick="this.closest('.file-item').remove()">✕</button>
+        </div>
+        <div class="file-item">
+          <div class="file-icon">📋</div>
+          <div class="file-name">HFS_Casket_Price_List_2026.pdf</div>
+          <div class="file-meta">FTC Casket Price List · Updated Jan 2026</div>
+          <button class="btn btn-ghost btn-sm" onclick="showToast('Casket Price List opened')">View</button>
+          <button class="btn btn-ghost btn-sm" onclick="showToast('Casket list sent to client ✓')">Send to Client</button>
+          <button class="file-remove" onclick="this.closest('.file-item').remove()">✕</button>
+        </div>
+        <div class="file-item">
+          <div class="file-icon">📋</div>
+          <div class="file-name">CVMG_Cemetery_Price_List_2026.pdf</div>
+          <div class="file-meta">Center Valley Memorial Gardens · Updated Feb 2026</div>
+          <button class="btn btn-ghost btn-sm" onclick="showToast('Cemetery Price List opened')">View</button>
+          <button class="btn btn-ghost btn-sm" onclick="showToast('Cemetery list sent to client ✓')">Send to Client</button>
+          <button class="file-remove" onclick="this.closest('.file-item').remove()">✕</button>
+        </div>
+        <div class="file-item">
+          <div class="file-icon">📝</div>
+          <div class="file-name">HFS_PreNeed_Contract_Form.docx</div>
+          <div class="file-meta">Pre-need contract template · Updated Mar 2026</div>
+          <button class="btn btn-ghost btn-sm" onclick="showToast('Contract form opened in Word')">Open</button>
+          <button class="btn btn-ghost btn-sm" onclick="showToast('Contract form sent to client ✓')">Send to Client</button>
+          <button class="file-remove" onclick="this.closest('.file-item').remove()">✕</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="upload-zone"
+      onclick="document.getElementById('priceListFile2').click()"
+      ondragover="event.preventDefault();this.classList.add('dragover')"
+      ondragleave="this.classList.remove('dragover')"
+      ondrop="handlePriceDrop(event)">
+      <div class="upload-zone-icon">📁</div>
+      <div class="upload-zone-title">Upload Price List or Quote Form</div>
+      <div class="upload-zone-sub">Accepts PDF, Excel (.xlsx), or Word (.docx) · Drag & drop or click to browse</div>
+    </div>
+    <input type="file" id="priceListFile2" accept=".pdf,.xlsx,.docx" style="display:none" onchange="handlePriceUpload(this)">
+  </div>
+
+  <!-- ══════════ PAGE: SETTINGS ══════════ -->
+  <div class="page" id="page-settings" style="display:none">
+    <div class="section-header"><div class="section-title">Settings</div></div>
+    <div class="card" style="padding:40px;text-align:center;">
+      <div style="font-size:32px;margin-bottom:8px">⚙️</div>
+      <div style="font-size:17px;font-weight:700;color:var(--navy);margin-bottom:6px">System Settings</div>
+      <div style="font-size:15px;color:#000">Staff accounts · Microsoft To Do integration · Email delivery · Workflow automation timing · Admin configuration</div>
+    </div>
+  </div>
+
+</main>
+</div>
+
+<!-- ══════════ MODAL: ADD CLIENT ══════════ -->
+<div class="modal-overlay" id="addClientModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">New Client</div>
+      <button class="modal-close" onclick="closeModal('addClientModal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-row single">
+        <div class="form-group">
+          <label class="form-label">Quote Type</label>
+          <select class="form-select">
+            <option value="">— Select type —</option>
+            <option>Traditional Funeral Service</option>
+            <option>Cremation Service</option>
+            <option>Graveside Only</option>
+            <option>Burial Plot (Cemetery)</option>
+            <option>Cremation Plot / Niche</option>
+            <option>Combination — Funeral + Cemetery</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-section-title">Primary Contact</div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">First Name</label><input class="form-input" type="text" placeholder="First"></div>
+        <div class="form-group"><label class="form-label">Last Name</label><input class="form-input" type="text" placeholder="Last"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Phone</label><input class="form-input" type="tel" placeholder="(479) ___-____" oninput="formatPhone(this)"></div>
+        <div class="form-group"><label class="form-label">Email</label><input class="form-input" type="email" placeholder="email@example.com"></div>
+      </div>
+      <div class="form-row single">
+        <div class="form-group"><label class="form-label">Address</label><input class="form-input" type="text" placeholder="Street address"></div>
+      </div>
+      <div class="form-row triple">
+        <div class="form-group"><label class="form-label">City</label><input class="form-input" type="text" placeholder="Russellville"></div>
+        <div class="form-group"><label class="form-label">State</label><input class="form-input" type="text" value="AR"></div>
+        <div class="form-group"><label class="form-label">Zip</label><input class="form-input" type="text" placeholder="72801"></div>
+      </div>
+      <label class="couple-toggle">
+        <input type="checkbox" id="coupleCheck" onchange="toggleSpouse(this)">
+        <span class="couple-toggle-label">👫 This is a couple — add spouse/partner</span>
+      </label>
+      <div class="spouse-section" id="spouseSection">
+        <div class="form-section-title">Spouse / Partner</div>
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">First Name</label><input class="form-input" type="text" placeholder="First"></div>
+          <div class="form-group"><label class="form-label">Last Name</label><input class="form-input" type="text" placeholder="Last (if different)"></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">Phone</label><input class="form-input" type="tel" placeholder="(479) ___-____" oninput="formatPhone(this)"></div>
+          <div class="form-group"><label class="form-label">Email</label><input class="form-input" type="email" placeholder="email@example.com"></div>
+        </div>
+      </div>
+      <div class="form-divider"><div class="form-divider-line"></div><div class="form-divider-label">Source & Assignment</div><div class="form-divider-line"></div></div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Source</label>
+          <select class="form-select">
+            <option>Walk-in</option>
+            <option>Referral — Client</option>
+            <option>Referral — Charlie Case</option>
+            <option>Prospect Letter</option>
+            <option>Phone Inquiry</option>
+            <option>Website</option>
+            <option>Community Event</option>
+            <option>VFW / American Legion</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Assigned Staff</label>
+          <select class="form-select">
+            <option>Robert Heflin</option>
+            <option>Matthew Myers</option>
+            <option>James Humphrey</option>
+            <option>Jim Bob Humphrey</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row single">
+        <div class="form-group">
+          <label class="form-label">Tags</label>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:6px">
+            <label style="display:flex;align-items:center;gap:5px;font-size:14px;cursor:pointer"><input type="checkbox"> Veteran</label>
+            <label style="display:flex;align-items:center;gap:5px;font-size:14px;cursor:pointer"><input type="checkbox"> Retired Teacher</label>
+            <label style="display:flex;align-items:center;gap:5px;font-size:14px;cursor:pointer"><input type="checkbox"> Senior 65+</label>
+            <label style="display:flex;align-items:center;gap:5px;font-size:14px;cursor:pointer"><input type="checkbox"> Field of Honor</label>
+            <label style="display:flex;align-items:center;gap:5px;font-size:14px;cursor:pointer"><input type="checkbox"> Pre-Need Priority</label>
+          </div>
+        </div>
+      </div>
+      <div class="form-row single">
+        <div class="form-group"><label class="form-label">Initial Notes</label><textarea class="form-textarea" placeholder="Notes from initial contact…"></textarea></div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('addClientModal')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveClient()">Save & Open Record →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ MODAL: CLIENT DETAIL ══════════ -->
+<div class="modal-overlay" id="clientModal">
+  <div class="modal" style="width:720px">
+    <div class="detail-header">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between">
+        <div>
+          <div class="detail-name" id="clientModalName">Smith, Jim & Mary</div>
+          <div style="margin-top:6px;display:flex;gap:8px;flex-wrap:wrap" id="clientModalBadges">
+            <span class="badge badge-followup">Follow-Up</span>
+            <span class="badge" style="background:rgba(255,255,255,0.2);color:white">Combination Package</span>
+            <span class="badge" style="background:rgba(200,169,81,0.35);color:var(--gold)">Referred by Charlie Case</span>
+          </div>
+        </div>
+        <button class="modal-close" style="margin-top:2px" onclick="closeModal('clientModal')">✕</button>
+      </div>
+      <div class="detail-meta" style="margin-top:10px">
+        <span>Heflin</span><span>(479) 555-0142</span><span>Jim Smith · Mary Smith</span><span>123 Oak St, Russellville AR 72801</span>
+      </div>
+    </div>
+    <div class="detail-tabs">
+      <div class="detail-tab active" onclick="switchTab(this,'tab-overview')">Overview</div>
+      <div class="detail-tab" onclick="switchTab(this,'tab-quotes')">Quotes & Pricing</div>
+      <div class="detail-tab" onclick="switchTab(this,'tab-activity')">Activity Log</div>
+      <div class="detail-tab" onclick="switchTab(this,'tab-documents')">Documents</div>
+      <div class="detail-tab" onclick="switchTab(this,'tab-tasks')">Tasks</div>
+    </div>
+    <div class="detail-body" id="tab-overview">
+      <div class="workflow-steps" style="margin-bottom:18px">
+        <div class="workflow-step done">Prospect</div>
+        <div class="workflow-step done">Quote Sent</div>
+        <div class="workflow-step active">Follow-Up</div>
+        <div class="workflow-step upcoming">Appointment</div>
+        <div class="workflow-step upcoming">Signed</div>
+      </div>
+      <div class="info-grid">
+        <div class="info-item"><div class="info-item-label">Quote Type</div><div class="info-item-value">Combination Package</div></div>
+        <div class="info-item"><div class="info-item-label">Status</div><div class="info-item-value"><span class="badge badge-followup">Follow-Up</span></div></div>
+        <div class="info-item"><div class="info-item-label">Total Quoted</div><div class="info-item-value" style="font-size:18px;font-weight:700;color:var(--navy)">$11,015</div></div>
+        <div class="info-item"><div class="info-item-label">Phone</div><div class="info-item-value">(479) 555-0142</div></div>
+        <div class="info-item"><div class="info-item-label">Email</div><div class="info-item-value">jim.smith@email.com</div></div>
+        <div class="info-item"><div class="info-item-label">Source</div><div class="info-item-value">Referral — Charlie Case</div></div>
+        <div class="info-item"><div class="info-item-label">Assigned Staff</div><div class="info-item-value">Robert Heflin</div></div>
+        <div class="info-item"><div class="info-item-label">Follow-Up Date</div><div class="info-item-value" style="color:var(--red);font-weight:700">Mar 21 — Overdue ⚠️</div></div>
+        <div class="info-item"><div class="info-item-label">Tags</div><div class="info-item-value">Veteran · Field of Honor</div></div>
+      </div>
+    </div>
+    <div class="detail-body" id="tab-quotes" style="display:none">
+      <div style="margin-bottom:12px;display:flex;justify-content:space-between;align-items:center">
+        <div style="font-size:15px;font-weight:700;color:var(--navy)">Price Quotes</div>
+        <button class="btn btn-primary btn-sm" onclick="showToast('New quote builder opened ✓')">+ New Quote</button>
+      </div>
+      <div style="background:var(--cream);border:1px solid var(--border);border-radius:var(--radius-lg);padding:16px;margin-bottom:12px">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+          <div>
+            <div style="font-weight:700;color:var(--navy);font-size:15px">Quote #Q-2026-0042 — Combination Package</div>
+            <div style="font-size:13px;color:var(--text-secondary);margin-top:2px">Sent March 12, 2026 · Version 1</div>
+          </div>
+          <div style="display:flex;gap:6px">
+            <button class="btn btn-ghost btn-sm">Resend</button>
+            <button class="btn btn-ghost btn-sm">Print</button>
+          </div>
+        </div>
+        <div class="quote-line"><span class="quote-line-name">Basic Services of Funeral Director & Staff</span><span class="quote-line-price">$2,195</span></div>
+        <div class="quote-line"><span class="quote-line-name">Embalming</span><span class="quote-line-price">$745</span></div>
+        <div class="quote-line"><span class="quote-line-name">Use of Facilities — Funeral Ceremony</span><span class="quote-line-price">$550</span></div>
+        <div class="quote-line"><span class="quote-line-name">Hearse (Local)</span><span class="quote-line-price">$325</span></div>
+        <div class="quote-line"><span class="quote-line-name">Casket — Galaxy Black 24x6x24 Upright</span><span class="quote-line-price">$3,850</span></div>
+        <div class="quote-line"><span class="quote-line-name">Burial Vault — Standard</span><span class="quote-line-price">$1,200</span></div>
+        <div class="quote-line"><span class="quote-line-name">Cemetery Lot — Field of Honor (Veteran)</span><span class="quote-line-price">$1,500</span></div>
+        <div class="quote-line"><span class="quote-line-name">Opening & Closing — Weekday</span><span class="quote-line-price">$650</span></div>
+        <div class="quote-total"><span class="quote-total-label">Total</span><span class="quote-total-amount">$11,015</span></div>
+      </div>
+    </div>
+    <div class="detail-body" id="tab-activity" style="display:none">
+      <div style="margin-bottom:12px;display:flex;gap:8px">
+        <button class="btn btn-ghost btn-sm" onclick="showToast('Call logged ✓')">+ Log Call</button>
+        <button class="btn btn-ghost btn-sm" onclick="showToast('Note added ✓')">+ Add Note</button>
+        <button class="btn btn-ghost btn-sm" onclick="showToast('Email logged ✓')">+ Log Email</button>
+      </div>
+      <div class="activity-item">
+        <div class="activity-icon">📧</div>
+        <div class="activity-content">
+          <div class="activity-title">Quote sent by email</div>
+          <div class="activity-note">Combination package quote #Q-2026-0042 emailed to jim.smith@email.com</div>
+          <div class="activity-time">March 12, 2026 · 2:14 PM · Heflin</div>
+        </div>
+      </div>
+      <div class="activity-item">
+        <div class="activity-icon">📞</div>
+        <div class="activity-content">
+          <div class="activity-title">Initial consultation call</div>
+          <div class="activity-note">Spoke with Jim and Mary. Very interested. Jim is veteran — Field of Honor. Wants traditional service. Called in by Charlie Case.</div>
+          <div class="activity-time">March 10, 2026 · 10:30 AM · Heflin</div>
+        </div>
+      </div>
+      <div class="activity-item">
+        <div class="activity-icon">🤝</div>
+        <div class="activity-content">
+          <div class="activity-title">Referral received from Charlie Case</div>
+          <div class="activity-note">Charlie Case referred Jim and Mary Smith following estate planning consultation.</div>
+          <div class="activity-time">March 9, 2026 · Heflin</div>
+        </div>
+      </div>
+    </div>
+    <div class="detail-body" id="tab-documents" style="display:none">
+      <div style="margin-bottom:12px;display:flex;justify-content:space-between;align-items:center">
+        <div style="font-size:14px;color:#000;font-weight:500">Document checklist — post-contract</div>
+        <button class="btn btn-ghost btn-sm" onclick="showToast('Document request letter sent to Jim Smith ✓')">Send Request Letter</button>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <label style="display:flex;align-items:center;gap:10px;padding:11px 13px;background:var(--cream);border-radius:var(--radius);border:1px solid var(--border);cursor:pointer">
+          <input type="checkbox"> <div><div style="font-size:14px;font-weight:700;color:#000">Military Discharge (DD-214)</div><div style="font-size:13px;color:#000">Required for Field of Honor / VA benefits</div></div>
+        </label>
+        <label style="display:flex;align-items:center;gap:10px;padding:11px 13px;background:var(--cream);border-radius:var(--radius);border:1px solid var(--border);cursor:pointer">
+          <input type="checkbox"> <div><div style="font-size:14px;font-weight:700;color:#000">Social Security Number Confirmation</div><div style="font-size:13px;color:#000">For death certificate filing</div></div>
+        </label>
+        <label style="display:flex;align-items:center;gap:10px;padding:11px 13px;background:var(--cream);border-radius:var(--radius);border:1px solid var(--border);cursor:pointer">
+          <input type="checkbox"> <div><div style="font-size:14px;font-weight:700;color:#000">Photograph for Records</div><div style="font-size:13px;color:#000">Optional — for memory book / obituary</div></div>
+        </label>
+        <label style="display:flex;align-items:center;gap:10px;padding:11px 13px;background:var(--green-light);border-radius:var(--radius);border:1px solid rgba(20,90,58,0.25);cursor:pointer">
+          <input type="checkbox" checked> <div><div style="font-size:14px;font-weight:700;color:var(--green)">Signed Pre-Need Contract ✓</div><div style="font-size:13px;color:#000">Received March 12, 2026</div></div>
+        </label>
+      </div>
+    </div>
+    <div class="detail-body" id="tab-tasks" style="display:none">
+      <div style="margin-bottom:12px;display:flex;justify-content:space-between;align-items:center">
+        <div style="font-size:14px;font-weight:500;color:#000">Tasks pushed to Microsoft To Do — Client List</div>
+        <button class="btn btn-ghost btn-sm" onclick="showToast('New task added to Microsoft To Do ✓')">+ Add Task</button>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <div style="display:flex;align-items:center;gap:10px;padding:11px 13px;background:var(--red-light);border-radius:var(--radius);border:1px solid rgba(176,32,32,0.2)">
+          <input type="checkbox">
+          <div style="flex:1"><div style="font-size:14px;font-weight:700;color:var(--red)">Follow-up call — Smith, Jim & Mary</div><div style="font-size:13px;color:#000">Call after quote · Synced to To Do</div></div>
+          <span style="font-size:12px;font-weight:700;color:var(--red)">OVERDUE</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;padding:11px 13px;background:var(--cream);border-radius:var(--radius);border:1px solid var(--border)">
+          <input type="checkbox">
+          <div style="flex:1"><div style="font-size:14px;font-weight:700;color:#000">Request DD-214 — Jim Smith</div><div style="font-size:13px;color:#000">Military discharge for Field of Honor · Synced to To Do</div></div>
+          <span style="font-size:13px;color:#000">Mar 25</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;padding:11px 13px;background:var(--green-light);border-radius:var(--radius);border:1px solid rgba(20,90,58,0.2)">
+          <input type="checkbox" checked>
+          <div style="flex:1"><div style="font-size:14px;font-weight:700;color:var(--green);text-decoration:line-through">Send quote — Smith, Jim & Mary</div><div style="font-size:13px;color:#000">Completed March 12, 2026</div></div>
+          <span style="font-size:13px;color:var(--green);font-weight:700">Done ✓</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ── PAGE NAVIGATION ──
+function showPage(id) {
+  document.querySelectorAll('[id^="page-"]').forEach(p => p.style.display = 'none');
+  const el = document.getElementById('page-' + id);
+  if (el) { el.style.display = 'block'; el.style.animation = 'none'; void el.offsetWidth; el.style.animation = ''; }
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  const navMap = { home: 0, dashboard: 1, clients: 2, quotes: 3, prospects: 4, referrals: 5, templates: 6, pricing: 7, settings: 8 };
+  const navItems = document.querySelectorAll('.nav-item');
+  const idx = navMap[id];
+  if (idx !== undefined && navItems[idx]) navItems[idx].classList.add('active');
+  const titles = { home: 'Search & Quick Add', dashboard: 'Follow-Up Dashboard', clients: 'All Clients', quotes: 'Price Quotes', prospects: 'Prospecting & Mail Merge', referrals: 'Referral Management', templates: 'Letter Templates', pricing: 'Price Lists', settings: 'Settings' };
+  const tb = document.querySelector('.topbar-title');
+  if (tb) tb.textContent = titles[id] || '';
+}
+
+// ── MODAL ──
+function openModal(id) { document.getElementById(id).classList.add('open'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+document.querySelectorAll('.modal-overlay').forEach(m => {
+  m.addEventListener('click', e => { if (e.target === m) m.classList.remove('open'); });
+});
+
+// ── CLIENT DETAIL ──
+function openClient(id) {
+  const clients = {
+    smith: { name: 'Smith, Jim & Mary', badges: `<span class="badge badge-followup">Follow-Up</span><span class="badge" style="background:rgba(255,255,255,0.2);color:white">Combination Package</span><span class="badge" style="background:rgba(200,169,81,0.35);color:var(--gold)">Referred by Charlie Case</span>` },
+    johnson: { name: 'Johnson, Earl', badges: `<span class="badge badge-quote">Active Quote</span><span class="badge" style="background:rgba(255,255,255,0.2);color:white">Burial Plot</span><span class="badge" style="background:rgba(200,169,81,0.35);color:var(--gold)">Veteran — Field of Honor</span>` },
+    henderson: { name: 'Henderson, Margaret & Bob', badges: `<span class="badge badge-appointment">Appointment Mar 22</span><span class="badge" style="background:rgba(255,255,255,0.2);color:white">Combination Package</span>` },
+  };
+  const c = clients[id] || clients.smith;
+  document.getElementById('clientModalName').textContent = c.name;
+  document.getElementById('clientModalBadges').innerHTML = c.badges;
+  openModal('clientModal');
+}
+
+// ── TAB SWITCHING ──
+function switchTab(el, tabId) {
+  el.closest('.modal').querySelectorAll('.detail-tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  el.closest('.modal').querySelectorAll('.detail-body').forEach(b => b.style.display = 'none');
+  const t = document.getElementById(tabId);
+  if (t) t.style.display = 'block';
+}
+
+// ── SEARCH ──
+function handleSearch(val) {
+  document.getElementById('searchResults').classList.toggle('show', val.length > 0);
+}
+function closeSearch() { document.getElementById('searchResults').classList.remove('show'); }
+
+// ── COUPLE TOGGLE ──
+function toggleSpouse(cb) {
+  document.getElementById('spouseSection').classList.toggle('show', cb.checked);
+}
+
+// ── PHONE AUTO-FORMAT ──
+function formatPhone(el) {
+  let d = el.value.replace(/\D/g, '').slice(0, 10);
+  if (!d) { el.value = ''; return; }
+  if (d.length <= 3) el.value = '(' + d;
+  else if (d.length <= 6) el.value = '(' + d.slice(0,3) + ') ' + d.slice(3);
+  else el.value = '(' + d.slice(0,3) + ') ' + d.slice(3,6) + '-' + d.slice(6);
+}
+
+// Wire phone format to all tel inputs
+document.querySelectorAll('input[type="tel"]').forEach(el => {
+  el.addEventListener('input', () => formatPhone(el));
+});
+
+// ── SORT TABLE ──
+let sortState = {};
+function sortTable(colIndex, btn) {
+  const tbody = document.getElementById('clientTableBody');
+  const rows = Array.from(tbody.querySelectorAll('tr'));
+  const key = colIndex;
+  const prev = sortState[key] || 'none';
+  const dir = prev === 'asc' ? 'desc' : 'asc';
+  sortState = {}; sortState[key] = dir;
+
+  // Reset all sort buttons
+  document.querySelectorAll('.sort-btn').forEach(b => { b.classList.remove('asc','desc'); });
+  btn.classList.add(dir);
+
+  rows.sort((a, b) => {
+    const aText = (a.cells[colIndex] ? a.cells[colIndex].textContent : '').trim().toLowerCase();
+    const bText = (b.cells[colIndex] ? b.cells[colIndex].textContent : '').trim().toLowerCase();
+    if (aText < bText) return dir === 'asc' ? -1 : 1;
+    if (aText > bText) return dir === 'asc' ? 1 : -1;
+    return 0;
+  });
+
+  rows.forEach(r => tbody.appendChild(r));
+}
+
+// ── FILTER ──
+function toggleFilter() {
+  const panel = document.getElementById('filterPanel');
+  panel.classList.toggle('open');
+  document.getElementById('filterToggleBtn').textContent = panel.classList.contains('open') ? '🔼 Filter' : '🔽 Filter';
+}
+
+function applyFilters() {
+  const types = Array.from(document.querySelectorAll('input[name="ftype"]:checked')).map(c => c.value);
+  const statuses = Array.from(document.querySelectorAll('input[name="fstatus"]:checked')).map(c => c.value);
+  const staffs = Array.from(document.querySelectorAll('input[name="fstaff"]:checked')).map(c => c.value);
+
+  const rows = document.querySelectorAll('#clientTableBody tr');
+  let visible = 0;
+  rows.forEach(row => {
+    const rowType = row.dataset.type || '';
+    const rowStatus = row.dataset.status || '';
+    const rowStaff = row.dataset.staff || '';
+
+    const typeOk = types.length === 0 || types.includes(rowType);
+    const statusOk = statuses.length === 0 || statuses.includes(rowStatus);
+    const staffOk = staffs.length === 0 || staffs.includes(rowStaff);
+
+    const show = typeOk && statusOk && staffOk;
+    row.style.display = show ? '' : 'none';
+    if (show) visible++;
+  });
+
+  const total = rows.length;
+  const filterCount = types.length + statuses.length + staffs.length;
+  document.getElementById('clientCount').textContent = filterCount > 0 ? `${visible} of ${total} shown` : `${total} total`;
+  document.getElementById('filterStatus').textContent = filterCount > 0 ? `${filterCount} filter${filterCount > 1 ? 's' : ''} active` : '';
+}
+
+function clearFilters() {
+  document.querySelectorAll('input[name="ftype"], input[name="fstatus"], input[name="fstaff"]').forEach(cb => cb.checked = false);
+  applyFilters();
+}
+
+// ── SAVE CLIENT ──
+function saveClient() {
+  closeModal('addClientModal');
+  showToast('New client saved ✓ — opening record…');
+}
+
+// ── TOAST ──
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+// ── FILE HANDLERS ──
+function handleTemplateUpload(input) {
+  if (!input.files[0]) return;
+  showToast('Template uploaded: ' + input.files[0].name + ' ✓');
+  addFileToList(input.files[0], 'templateFileList', 'template');
+}
+function handleNewTemplate(input) {
+  if (!input.files[0]) return;
+  addFileToList(input.files[0], 'templateFileList', 'template');
+  showToast('Template added: ' + input.files[0].name + ' ✓');
+}
+function handlePriceUpload(input) {
+  if (!input.files[0]) return;
+  addFileToList(input.files[0], 'priceFileList', 'price');
+  showToast('Price list uploaded: ' + input.files[0].name + ' ✓');
+}
+function handleTemplateDrop(e) {
+  e.preventDefault();
+  document.getElementById('templateDropZone').classList.remove('dragover');
+  const file = e.dataTransfer.files[0];
+  if (file) { addFileToList(file, 'templateFileList', 'template'); showToast('Template added: ' + file.name + ' ✓'); }
+}
+function handlePriceDrop(e) {
+  e.preventDefault();
+  const file = e.dataTransfer.files[0];
+  if (file) { addFileToList(file, 'priceFileList', 'price'); showToast('Price list added: ' + file.name + ' ✓'); }
+}
+
+function addFileToList(file, listId, type) {
+  const list = document.getElementById(listId);
+  let fileList = list.querySelector('.file-list');
+  if (!fileList) { fileList = document.createElement('div'); fileList.className = 'file-list'; list.prepend(fileList); }
+  const item = document.createElement('div');
+  item.className = 'file-item';
+  const today = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+  item.innerHTML = `
+    <div class="file-icon">${file.name.endsWith('.pdf') ? '📋' : '📄'}</div>
+    <div class="file-name">${file.name}</div>
+    <div class="file-meta">Uploaded ${today}</div>
+    ${type === 'template' ? `<button class="btn btn-ghost btn-sm" onclick="showToast('Opening in Word…')">Open</button><button class="btn btn-ghost btn-sm" onclick="showToast('Running merge…')">Merge</button>` : `<button class="btn btn-ghost btn-sm" onclick="showToast('Viewing file…')">View</button><button class="btn btn-ghost btn-sm" onclick="showToast('Sent to client ✓')">Send to Client</button>`}
+    <button class="file-remove" onclick="this.closest('.file-item').remove()">✕</button>
+  `;
+  fileList.prepend(item);
+}
+
+// ══════════════════════════════════════════════
+// MAIL MERGE ENGINE
+// ══════════════════════════════════════════════
+
+// ── LETTER TEMPLATES ──
+const TEMPLATES = {
+  veteran: `{{Date}}
+
+{{Title}} {{FullName}}
+{{Address}}
+{{City}}, {{State}} {{ZIP}}
+
+Dear {{Title}} {{LastName}},
+
+On behalf of Humphrey Funeral Service and Center Valley Memorial Gardens, I want to personally thank you for your service to our country.
+
+We are proud to offer the Field of Honor at Center Valley Memorial Gardens — a dedicated section with Arlington-style granite markers reserved exclusively for veterans and their spouses. It is our way of honoring those who have sacrificed for our freedom.
+
+We would welcome the opportunity to visit with you about pre-planning your funeral and cemetery arrangements — at no obligation and no pressure. Having a plan in place gives your family a tremendous gift: the gift of clarity when they need it most.
+
+Please call our office at (479) 968-2281 or contact me directly at (479) 264-1427. I would be honored to meet with you at your convenience.
+
+With gratitude for your service,
+
+{{Staff}}
+Humphrey Funeral Service & Center Valley Memorial Gardens
+2801 W. Main Street · Russellville, Arkansas 72801
+(479) 968-2281`,
+
+  teacher: `{{Date}}
+
+{{Title}} {{FullName}}
+{{Address}}
+{{City}}, {{State}} {{ZIP}}
+
+Dear {{Title}} {{LastName}},
+
+Your years of dedicated service to the students and families of this community have made a lasting difference. On behalf of Humphrey Funeral Service and Center Valley Memorial Gardens, we want to acknowledge that legacy.
+
+We are reaching out to share information about our pre-need planning services. Making arrangements in advance is one of the most thoughtful gifts you can give your family — it removes uncertainty and allows your wishes to be honored exactly as you intend.
+
+Our team is available to visit with you at your home, at our funeral home, or wherever is most comfortable. There is no obligation and no pressure — only information and time.
+
+Please call us at (479) 968-2281 to schedule a visit, or feel free to reach me personally at (479) 264-1427.
+
+With respect and appreciation,
+
+{{Staff}}
+Humphrey Funeral Service & Center Valley Memorial Gardens
+2801 W. Main Street · Russellville, Arkansas 72801
+(479) 968-2281`,
+
+  senior: `{{Date}}
+
+{{Title}} {{FullName}}
+{{Address}}
+{{City}}, {{State}} {{ZIP}}
+
+Dear {{Title}} {{LastName}},
+
+Humphrey Funeral Service has served the families of Russellville and the Arkansas River Valley since 1933. For nearly a century, our family has had the privilege of walking alongside this community through its most difficult moments.
+
+One of the most valuable things we offer is the opportunity to make your arrangements in advance — at today's prices, with your wishes fully documented, and your family protected from having to make difficult decisions during a time of grief.
+
+We invite you to call or stop by at your convenience. There is no cost and no obligation for a planning consultation.
+
+Humphrey Funeral Service: (479) 968-2281
+Center Valley Memorial Gardens: (479) 968-2281
+2801 W. Main Street, Russellville, Arkansas 72801
+
+Sincerely,
+
+{{Staff}}
+Humphrey Funeral Service`,
+
+  followup: `{{Date}}
+
+{{Title}} {{FullName}}
+{{Address}}
+{{City}}, {{State}} {{ZIP}}
+
+Dear {{Title}} {{LastName}},
+
+Thank you for taking the time to speak with us recently about pre-need planning. We appreciate your interest and want you to know we are here whenever you are ready to take the next step.
+
+If you have any questions about what we discussed, or if you would like to review the information we provided, please do not hesitate to call. We are happy to meet again at your convenience — at our office, at your home, or by phone.
+
+You can reach me directly at (479) 264-1427, or our main office at (479) 968-2281.
+
+Thank you again for considering Humphrey Funeral Service and Center Valley Memorial Gardens.
+
+Sincerely,
+
+{{Staff}}
+Humphrey Funeral Service & Center Valley Memorial Gardens
+2801 W. Main Street · Russellville, Arkansas 72801`,
+
+  quote: `{{Date}}
+
+{{Title}} {{FullName}}
+{{Address}}
+{{City}}, {{State}} {{ZIP}}
+
+Dear {{Title}} {{LastName}},
+
+Thank you for the opportunity to prepare the enclosed price quotation for pre-need funeral and cemetery services.
+
+This quotation reflects your selections as we discussed them. All prices are guaranteed at today's rates when a pre-need contract is executed. There is no obligation to proceed, and you are welcome to take as much time as you need to review the information with your family.
+
+Please do not hesitate to call with any questions. I am happy to meet with you again to go over the details or make any adjustments to the selections.
+
+Sincerely,
+
+{{Staff}}
+Humphrey Funeral Service & Center Valley Memorial Gardens
+(479) 968-2281 · 2801 W. Main Street · Russellville, Arkansas 72801`
+};
+
+// ── MERGE STATE ──
+let mergeRecords = [];  // all loaded records
+let activeTagFilters = new Set();
+let outputMode = 'print';
+let previewRecords = [];
+let previewCurrent = 0;
+
+// ── SELECT TEMPLATE ──
+function selectTemplate(key) {
+  // Update radio
+  const r = document.querySelector(`input[name="mergeTemplate"][value="${key}"]`);
+  if (r) r.checked = true;
+  // Update border highlight
+  ['veteran','teacher','senior','followup','quote','custom'].forEach(k => {
+    const lbl = document.getElementById('tlbl-' + k);
+    if (lbl) { lbl.style.borderColor = k === key ? 'var(--navy)' : 'var(--border)'; lbl.style.background = k === key ? 'var(--blue-light)' : ''; }
+  });
+  // Fill editor
+  const tb = document.getElementById('templateBody');
+  if (key !== 'custom') {
+    tb.value = TEMPLATES[key] || '';
+  }
+  // If custom, leave editor as-is for user to type
+}
+
+// ── DATA SOURCE ──
+function switchDataSource(src) {
+  ['csv','crm','paste'].forEach(s => {
+    const el = document.getElementById('ds-' + s);
+    if (el) el.style.display = s === src ? 'block' : 'none';
+  });
+  if (src === 'crm') loadCRMRecords();
+  updateMergeCount();
+}
+
+function loadCRMRecords() {
+  // Pull from the client table rows that are visible
+  const rows = document.querySelectorAll('#clientTableBody tr');
+  mergeRecords = [];
+  rows.forEach(row => {
+    if (row.style.display === 'none') return;
+    const name = row.querySelector('.client-name')?.textContent || '';
+    const parts = name.split(',');
+    const last = parts[0]?.trim() || '';
+    const first = parts[1]?.trim().split(' ')[0] || '';
+    const staff = row.cells[5]?.textContent?.trim() || '';
+    mergeRecords.push({ LastName: last, FirstName: first, Title: '', Address: '', City: 'Russellville', State: 'AR', ZIP: '72801', Phone: '', Tag: row.dataset.type || '', Staff: staff });
+  });
+  const el = document.getElementById('crmRecordList');
+  if (el) el.innerHTML = mergeRecords.map(r => `<div>• ${r.LastName}, ${r.FirstName}</div>`).join('') || '<div>No visible clients. Apply filters on All Clients page first.</div>';
+  updateMergeCount();
+}
+
+// ── CSV PARSING ──
+function parseCSV(text) {
+  const lines = text.trim().split(/\r?\n/);
+  if (lines.length < 2) return [];
+  const headers = lines[0].split(',').map(h => h.trim().replace(/^"|"$/g, ''));
+  const records = [];
+  for (let i = 1; i < lines.length; i++) {
+    const line = lines[i];
+    if (!line.trim()) continue;
+    // Handle quoted fields
+    const vals = [];
+    let cur = '', inQ = false;
+    for (let c = 0; c < line.length; c++) {
+      if (line[c] === '"') { inQ = !inQ; }
+      else if (line[c] === ',' && !inQ) { vals.push(cur.trim()); cur = ''; }
+      else { cur += line[c]; }
+    }
+    vals.push(cur.trim());
+    const rec = {};
+    headers.forEach((h, idx) => { rec[h] = vals[idx] || ''; });
+    // Normalize common column name variants
+    if (!rec.FirstName && rec['First Name']) rec.FirstName = rec['First Name'];
+    if (!rec.LastName && rec['Last Name']) rec.LastName = rec['Last Name'];
+    if (!rec.ZIP && rec.Zip) rec.ZIP = rec.Zip;
+    if (!rec.ZIP && rec['Zip Code']) rec.ZIP = rec['Zip Code'];
+    if (!rec.Phone && rec['Phone Number']) rec.Phone = rec['Phone Number'];
+    if (!rec.Tag && rec.Affinity) rec.Tag = rec.Affinity;
+    if (!rec.Tag && rec.Group) rec.Tag = rec.Group;
+    if (rec.LastName || rec.FirstName) records.push(rec);
+  }
+  return records;
+}
+
+function handleCSVFile(input) {
+  if (!input.files[0]) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    mergeRecords = parseCSV(e.target.result);
+    document.getElementById('csvStatus').style.display = 'block';
+    document.getElementById('csvStatusText').textContent = `✓ Loaded ${mergeRecords.length} records from ${input.files[0].name}`;
+    updateMergeCount();
+    showToast(`${mergeRecords.length} records loaded ✓`);
+  };
+  reader.readAsText(input.files[0]);
+}
+
+function handleCSVDrop(e) {
+  e.preventDefault();
+  document.getElementById('csvDropZone').classList.remove('dragover');
+  const file = e.dataTransfer.files[0];
+  if (!file) return;
+  const fakeInput = { files: [file] };
+  handleCSVFile(fakeInput);
+}
+
+function parsePasteData() {
+  const text = document.getElementById('pasteData').value;
+  if (!text.trim()) { mergeRecords = []; updateMergeCount(); return; }
+  mergeRecords = parseCSV(text);
+  document.getElementById('pasteStatus').textContent = mergeRecords.length > 0 ? `✓ ${mergeRecords.length} records parsed` : 'Could not parse — check header row format';
+  updateMergeCount();
+}
+
+// ── SAMPLE CSV ──
+function downloadSampleCSV() {
+  const csv = `LastName,FirstName,Title,Address,City,State,ZIP,Phone,Tag\nSmith,Jim,Mr.,123 Oak Street,Russellville,AR,72801,(479) 555-0100,Veteran\nWilliams,Dorothy,Mrs.,456 Pine Avenue,Atkins,AR,72823,(479) 555-0200,Retired Teacher\nJohnson,Earl,Mr.,789 Elm Drive,Dardanelle,AR,72834,(479) 555-0300,Veteran\nDavis,Helen,Mrs.,321 Maple Lane,Russellville,AR,72801,(479) 555-0400,Senior\nMoore,Gerald,Mr.,654 Oak Circle,Pottsville,AR,72858,(479) 555-0500,General`;
+  const blob = new Blob([csv], { type: 'text/csv' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'HFS_Prospect_Template.csv';
+  a.click();
+}
+
+// ── TAG FILTERS ──
+function toggleTagFilter(tag, el) {
+  if (activeTagFilters.has(tag)) { activeTagFilters.delete(tag); el.classList.remove('active'); }
+  else { activeTagFilters.add(tag); el.classList.add('active'); }
+  updateMergeCount();
+}
+
+// ── APPLY FILTERS & COUNT ──
+function getFilteredRecords() {
+  const city = (document.getElementById('filterCity')?.value || '').toLowerCase().trim();
+  const state = (document.getElementById('filterState')?.value || '').toLowerCase().trim();
+  const zip = (document.getElementById('filterZip')?.value || '').trim();
+
+  return mergeRecords.filter(r => {
+    if (activeTagFilters.size > 0) {
+      const tag = (r.Tag || '').toLowerCase();
+      let match = false;
+      activeTagFilters.forEach(t => { if (tag.includes(t.toLowerCase())) match = true; });
+      if (!match) return false;
+    }
+    if (city && !(r.City || '').toLowerCase().includes(city)) return false;
+    if (state && (r.State || '').toLowerCase() !== state) return false;
+    if (zip && !(r.ZIP || '').includes(zip)) return false;
+    return true;
+  });
+}
+
+function updateMergeCount() {
+  const filtered = getFilteredRecords();
+  const totalEl = document.getElementById('totalLoaded');
+  const countEl = document.getElementById('mergeCount');
+  const summEl = document.getElementById('filterSummary');
+  if (totalEl) totalEl.textContent = mergeRecords.length;
+  if (countEl) countEl.textContent = filtered.length;
+  const active = activeTagFilters.size > 0;
+  const city = document.getElementById('filterCity')?.value?.trim();
+  const zip = document.getElementById('filterZip')?.value?.trim();
+  const parts = [];
+  if (active) parts.push([...activeTagFilters].join(', '));
+  if (city) parts.push('City: ' + city);
+  if (zip) parts.push('ZIP: ' + zip);
+  if (summEl) summEl.textContent = parts.length ? 'Filters: ' + parts.join(' · ') : '';
+}
+
+// ── MERGE FIELD SUBSTITUTION ──
+function mergeRecord(template, rec, staff, date) {
+  const title = rec.Title || '';
+  const first = rec.FirstName || '';
+  const last = rec.LastName || '';
+  const fullName = [title, first, last].filter(Boolean).join(' ');
+  return template
+    .replace(/\{\{Date\}\}/g, date)
+    .replace(/\{\{Title\}\}/g, title)
+    .replace(/\{\{FirstName\}\}/g, first)
+    .replace(/\{\{LastName\}\}/g, last)
+    .replace(/\{\{FullName\}\}/g, fullName)
+    .replace(/\{\{Address\}\}/g, rec.Address || '')
+    .replace(/\{\{City\}\}/g, rec.City || '')
+    .replace(/\{\{State\}\}/g, rec.State || '')
+    .replace(/\{\{ZIP\}\}/g, rec.ZIP || '')
+    .replace(/\{\{Phone\}\}/g, rec.Phone || '')
+    .replace(/\{\{Staff\}\}/g, staff);
+}
+
+// ── PREVIEW ──
+function previewMerge() {
+  const filtered = getFilteredRecords();
+  if (!filtered.length) { showToast('No records loaded — upload a CSV or paste data first'); return; }
+  const template = document.getElementById('templateBody').value;
+  if (!template.trim()) { showToast('Please select or write a letter template first'); return; }
+  const staff = document.getElementById('mergeStaff')?.value || 'Robert Heflin';
+  const date = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+
+  previewRecords = filtered.slice(0, Math.min(filtered.length, 5));
+  previewCurrent = 0;
+
+  document.getElementById('previewPanel').style.display = 'block';
+  document.getElementById('previewTotal').textContent = previewRecords.length;
+  showPreviewRecord();
+  document.getElementById('previewPanel').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function showPreviewRecord() {
+  const rec = previewRecords[previewCurrent];
+  if (!rec) return;
+  const staff = document.getElementById('mergeStaff')?.value || 'Robert Heflin';
+  const date = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+  const merged = mergeRecord(document.getElementById('templateBody').value, rec, staff, date);
+  document.getElementById('letterPreview').textContent = merged;
+  document.getElementById('previewIdx').textContent = previewCurrent + 1;
+}
+
+function prevPreview() { if (previewCurrent > 0) { previewCurrent--; showPreviewRecord(); } }
+function nextPreview() { if (previewCurrent < previewRecords.length - 1) { previewCurrent++; showPreviewRecord(); } }
+
+// ── RUN MERGE ──
+function runMerge() {
+  const filtered = getFilteredRecords();
+  if (!filtered.length) { showToast('No records to merge — upload data first'); return; }
+  const template = document.getElementById('templateBody').value;
+  if (!template.trim()) { showToast('Please select or write a letter template first'); return; }
+  const staff = document.getElementById('mergeStaff')?.value || 'Robert Heflin';
+  const date = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+
+  if (outputMode === 'csv') {
+    exportMailingListCSV(filtered);
+  } else {
+    printMergedLetters(filtered, template, staff, date);
+  }
+}
+
+function selectOutput(mode) {
+  outputMode = mode;
+  ['print','csv'].forEach(m => {
+    const el = document.getElementById('out-' + m);
+    if (el) {
+      el.style.borderColor = m === mode ? 'var(--navy)' : 'var(--border)';
+      el.style.background = m === mode ? 'var(--blue-light)' : '';
+    }
+  });
+}
+
+// ── PRINT OUTPUT ──
+function printMergedLetters(records, template, staff, date) {
+  const letterHTML = records.map(rec => {
+    const merged = mergeRecord(template, rec, staff, date);
+    const lines = merged.split('\n').map(l => `<p style="margin:0 0 6px 0;line-height:1.7">${l || '&nbsp;'}</p>`).join('');
+    return `<div class="letter">${lines}</div>`;
+  }).join('');
+
+  const win = window.open('', '_blank');
+  win.document.write(`<!DOCTYPE html><html><head><title>HFS Merged Letters — ${records.length} Records</title>
+<style>
+  @page { margin: 1in; }
+  body { font-family: Georgia, serif; font-size: 12pt; line-height: 1.7; color: #000; }
+  .letter { page-break-after: always; max-width: 6.5in; }
+  .letter:last-child { page-break-after: avoid; }
+  p { margin: 0 0 6px 0; }
+  .header { font-family: Arial, sans-serif; font-size: 10pt; color: #333; border-bottom: 1px solid #ccc; padding-bottom: 8px; margin-bottom: 24px; }
+  @media print { .no-print { display: none; } }
+</style>
+</head><body>
+<div class="header no-print" style="margin-bottom:16px;padding:12px 0">
+  <strong>HFS Mail Merge — ${records.length} letters — ${date}</strong>
+  &nbsp;&nbsp;
+  <button onclick="window.print()" style="padding:8px 20px;background:#1B3A5C;color:white;border:none;border-radius:4px;font-size:13px;cursor:pointer;margin-right:8px">🖨️ Print All Letters</button>
+  <button onclick="window.close()" style="padding:8px 16px;background:#eee;border:none;border-radius:4px;font-size:13px;cursor:pointer">Close</button>
+</div>
+${letterHTML}
+</body></html>`);
+  win.document.close();
+  showToast(`${records.length} letters ready to print ✓`);
+}
+
+// ── CSV EXPORT ──
+function exportMailingListCSV(records) {
+  const headers = 'LastName,FirstName,Title,Address,City,State,ZIP,Phone,Tag';
+  const rows = records.map(r =>
+    [r.LastName, r.FirstName, r.Title, r.Address, r.City, r.State, r.ZIP, r.Phone, r.Tag]
+    .map(v => `"${(v||'').replace(/"/g,'""')}"`)
+    .join(',')
+  );
+  const csv = [headers, ...rows].join('\n');
+  const blob = new Blob([csv], { type: 'text/csv' });
+  const a = document.createEleme
