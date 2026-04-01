@@ -1,0 +1,215 @@
+// ============================================================
+// HFS / CVMG Pre-Need CRM — Prisma Schema
+// Database: Vercel Postgres (Neon)
+// ============================================================
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("POSTGRES_PRISMA_URL")
+  directUrl = env("DATABASE_URL_UNPOOLED")
+}
+
+// ── STAFF ──────────────────────────────────────────────────
+model Staff {
+  id         String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name       String
+  initials   String
+  email      String?   @unique
+  role       String?
+  active     Boolean   @default(true)
+  createdAt  DateTime  @default(now()) @map("created_at")
+
+  clients    Client[]  @relation("AssignedStaff")
+  quotes     Quote[]
+  activities Activity[]
+  tasks      Task[]
+
+  @@map("staff")
+}
+
+// ── REFERRAL SOURCES ───────────────────────────────────────
+model Referral {
+  id             String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name           String
+  relationship   String?
+  referralCount  Int      @default(0) @map("referral_count")
+  notes          String?
+  createdAt      DateTime @default(now()) @map("created_at")
+
+  clients        Client[]
+
+  @@map("referrals")
+}
+
+// ── CLIENTS ────────────────────────────────────────────────
+model Client {
+  id                 String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  firstName          String    @map("first_name")
+  lastName           String    @map("last_name")
+  honorific          String?
+  company            String?
+  title              String?
+  email              String?
+  mobilePhone        String?   @map("mobile_phone")
+  homePhone          String?   @map("home_phone")
+  preferredContact   String    @default("mobile") @map("preferred_contact")
+  street             String?
+  city               String?
+  state              String    @default("AR")
+  zip                String?
+  status             String    @default("prospect")
+  contactType        String[]  @map("contact_type")
+  source             String?
+  assignedStaffId    String?   @map("assigned_staff_id") @db.Uuid
+  referralSourceId   String?   @map("referral_source_id") @db.Uuid
+  followUpDate       DateTime? @map("follow_up_date") @db.Date
+  priority           String    @default("normal")
+  totalQuoted        Decimal   @default(0) @map("total_quoted") @db.Decimal(10, 2)
+  notes              String?
+  photoUrl           String?   @map("photo_url")
+  createdAt          DateTime  @default(now()) @map("created_at")
+  updatedAt          DateTime  @updatedAt @map("updated_at")
+
+  staff              Staff?    @relation("AssignedStaff", fields: [assignedStaffId], references: [id])
+  referral           Referral? @relation(fields: [referralSourceId], references: [id])
+  spouse             Spouse?
+  quotes             Quote[]
+  activities         Activity[]
+  documents          Document[]
+  tasks              Task[]
+
+  @@index([status])
+  @@index([followUpDate])
+  @@index([assignedStaffId])
+  @@map("clients")
+}
+
+// ── SPOUSES ────────────────────────────────────────────────
+model Spouse {
+  id           String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  clientId     String   @unique @map("client_id") @db.Uuid
+  firstName    String?  @map("first_name")
+  lastName     String?  @map("last_name")
+  honorific    String?
+  mobilePhone  String?  @map("mobile_phone")
+  homePhone    String?  @map("home_phone")
+  email        String?
+  createdAt    DateTime @default(now()) @map("created_at")
+
+  client       Client   @relation(fields: [clientId], references: [id], onDelete: Cascade)
+
+  @@map("spouses")
+}
+
+// ── QUOTES ─────────────────────────────────────────────────
+model Quote {
+  id           String         @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  clientId     String         @map("client_id") @db.Uuid
+  status       String         @default("draft")
+  subtotal     Decimal        @default(0) @db.Decimal(10, 2)
+  discount     Decimal        @default(0) @db.Decimal(10, 2)
+  totalAmount  Decimal        @default(0) @map("total_amount") @db.Decimal(10, 2)
+  notes        String?
+  createdById  String?        @map("created_by") @db.Uuid
+  createdAt    DateTime       @default(now()) @map("created_at")
+  updatedAt    DateTime       @updatedAt @map("updated_at")
+
+  client       Client         @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  createdBy    Staff?         @relation(fields: [createdById], references: [id])
+  lineItems    QuoteLineItem[]
+
+  @@index([clientId])
+  @@map("quotes")
+}
+
+// ── QUOTE LINE ITEMS ───────────────────────────────────────
+model QuoteLineItem {
+  id          String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  quoteId     String  @map("quote_id") @db.Uuid
+  description String
+  category    String?
+  quantity    Int     @default(1)
+  unitPrice   Decimal @default(0) @map("unit_price") @db.Decimal(10, 2)
+  total       Decimal @default(0) @db.Decimal(10, 2)
+
+  quote       Quote   @relation(fields: [quoteId], references: [id], onDelete: Cascade)
+
+  @@map("quote_line_items")
+}
+
+// ── ACTIVITIES ─────────────────────────────────────────────
+model Activity {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  clientId  String   @map("client_id") @db.Uuid
+  type      String
+  note      String?
+  staffId   String?  @map("staff_id") @db.Uuid
+  createdAt DateTime @default(now()) @map("created_at")
+
+  client    Client   @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  staff     Staff?   @relation(fields: [staffId], references: [id])
+
+  @@index([clientId])
+  @@index([createdAt(sort: Desc)])
+  @@map("activities")
+}
+
+// ── DOCUMENTS ──────────────────────────────────────────────
+model Document {
+  id         String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  clientId   String   @map("client_id") @db.Uuid
+  type       String?
+  name       String
+  status     String   @default("pending")
+  fileUrl    String?  @map("file_url")
+  uploadedAt DateTime @default(now()) @map("uploaded_at")
+
+  client     Client   @relation(fields: [clientId], references: [id], onDelete: Cascade)
+
+  @@map("documents")
+}
+
+// ── TASKS ──────────────────────────────────────────────────
+model Task {
+  id               String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  clientId         String?   @map("client_id") @db.Uuid
+  title            String
+  dueDate          DateTime? @map("due_date") @db.Date
+  completed        Boolean   @default(false)
+  priority         String    @default("normal")
+  assignedStaffId  String?   @map("assigned_staff_id") @db.Uuid
+  createdAt        DateTime  @default(now()) @map("created_at")
+
+  client           Client?   @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  staff            Staff?    @relation(fields: [assignedStaffId], references: [id])
+
+  @@index([dueDate])
+  @@map("tasks")
+}
+
+// ── LETTER TEMPLATES ───────────────────────────────────────
+model LetterTemplate {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name      String
+  type      String?
+  content   String?
+  fileUrl   String?  @map("file_url")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@map("letter_templates")
+}
+
+// ── PRICE LISTS ────────────────────────────────────────────
+model PriceList {
+  id         String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name       String
+  type       String?
+  fileUrl    String?  @map("file_url")
+  uploadedAt DateTime @default(now()) @map("uploaded_at")
+
+  @@map("price_lists")
+}

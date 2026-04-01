@@ -18,6 +18,13 @@ A web-based pre-need sales CRM built specifically for Humphrey Funeral Service a
 
 **Primary Users:** Robert Heflin (Pre-Need Counselor), Matthew Myers, James Humphrey, Jim Bob Humphrey
 **Hosting:** Vercel — IT administrator account; auto-deploy from GitHub
+
+### UI Standards (Mandatory — Apply to All Builds)
+- **Component Library:** Material UI (MUI) — use MUI components throughout (buttons, tables, modals, forms, tabs, badges, etc.)
+- **Background Color:** Beige (`#FAF7F2` / `--cream`) — applied to `body` and all page backgrounds; never white or gray as the base
+- **Color Palette:** Navy (`#1B3A5C`) + Gold (`#C8A951`) primary branding — carried through all MUI theme overrides
+- **Fonts:** Playfair Display (headings) + Source Sans 3 (body) — loaded via Google Fonts, applied via MUI theme typography
+- **All body text:** Black (`#000000`) — no gray body text anywhere; maximum contrast enforced
 **Design Standard:** Navy/gold branding, all body fonts black (#000), 16px base, maximum contrast throughout
 
 ---
