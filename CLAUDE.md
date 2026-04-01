@@ -14,18 +14,21 @@ npm run build
 
 # 2. Debug — fix any build errors, check browser console for runtime errors
 
-# 3. Prisma migrate — push schema changes to the live database
+# 3. Restart dev server — npm run build kills the dev server process
+npm run dev
+
+# 4. Prisma migrate — push schema changes to the live database
 npx prisma db push
 
-# 4. Commit
+# 5. Commit
 git add .
 git commit -m "description of changes"
 
-# 5. Push — triggers Vercel auto-deploy
+# 6. Push — triggers Vercel auto-deploy
 git push origin main
 ```
 
-**Never skip this sequence.** Build errors must be resolved before committing. Prisma schema changes must be pushed before the app is deployed.
+**Never skip this sequence.** Build errors must be resolved before committing. Prisma schema changes must be pushed before deploying. Always restart the dev server after a build — `npm run build` terminates the running dev process.
 
 ---
 
